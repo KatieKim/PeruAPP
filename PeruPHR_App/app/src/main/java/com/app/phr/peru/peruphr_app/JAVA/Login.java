@@ -4,6 +4,7 @@ package com.app.phr.peru.peruphr_app.JAVA;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -22,6 +23,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -31,6 +33,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.app.phr.peru.peruphr_app.R;
 
@@ -48,7 +51,17 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
      * Id to identity READ_CONTACTS permission request.
      */
     private static final int REQUEST_READ_CONTACTS = 0;
+    // preference to preserve user's status for networkless environment
+    final static String PREF_FILE_NAME = "Peru_PHR";
+    final static String PREF_ID = "PID";
+    final static String PREF_PW = "pw";
+    final static String PREF_KEY = "keyCD";
+    final static String LOG_IN = "Log_in";
+    final static String PATIENT_NAME = "pName";
+    private SharedPreferences preferences;
 
+    private String id;
+    private String password;
     /**
      * A dummy authentication store containing known user names and passwords.
      * TODO: remove after connecting to a real authentication system.
@@ -64,7 +77,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
     // UI references.
     private AutoCompleteTextView mIDView;
     private EditText mPasswordView;
-    private View mProgressView;
+    //private View mProgressView;
     private View mLoginFormView;
 
     @Override
@@ -74,7 +87,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
         // Set up the login form.
         mIDView = (AutoCompleteTextView) findViewById(R.id.id);
         populateAutoComplete();
-
+        preferences = getSharedPreferences(PREF_FILE_NAME, Activity.MODE_PRIVATE);
         mPasswordView = (EditText) findViewById(R.id.password);
         //TODO: 로그인 구현 주석 풀기
 //        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -92,16 +105,12 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO: 로그인 관련 함수 주석처리 풀기
-                //attemptLogin();
-                Intent myAct1 = new Intent(Login.this, MainTab.class);
-                startActivity(myAct1);
-
+                attemptLogin();
             }
         });
 
         mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
+        //mProgressView = findViewById(R.id.login_progress);
     }
 
     private void populateAutoComplete() {
@@ -154,97 +163,93 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
-        if (mAuthTask != null) {
-            return;
-        }
+        id = mIDView.getText().toString();
+        password = mPasswordView.getText().toString();
+        if (NetworkUtil.getConnectivityStatusBoolean(this)) {  //check network status
+            if (mAuthTask != null) {
+                return;
+            }
 
-        // Reset errors.
-        mIDView.setError(null);
-        mPasswordView.setError(null);
+            // Reset errors.
+            mIDView.setError(null);
+            mPasswordView.setError(null);
 
-        // Store values at the time of the login attempt.
-        String email = mIDView.getText().toString();
-        String password = mPasswordView.getText().toString();
+            boolean cancel = false;
+            View focusView = null;
 
-        boolean cancel = false;
-        View focusView = null;
+            // Check for a valid password, if the user entered one.
+            if (password.equals("")) {
+                mPasswordView.setError("this file is required");
+                Log.d("check","pw");
+                focusView = mPasswordView;
+                cancel = true;
+            }
 
-        // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordView;
-            cancel = true;
-        }
-
-        // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
-            mIDView.setError(getString(R.string.error_field_required));
-            focusView = mIDView;
-            cancel = true;
-        } else if (!isEmailValid(email)) {
-            mIDView.setError(getString(R.string.error_invalid_id));
-            focusView = mIDView;
-            cancel = true;
-        }
-
-        if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
-            focusView.requestFocus();
-        } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
-            showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+            // Check for a valid email address.
+            if (id.equals("")) {
+                mIDView.setError(getString(R.string.error_field_required));
+                focusView = mIDView;
+                cancel = true;
+            }
+            if (cancel) {
+                // There was an error; don't attempt login and focus the first
+                // form field with an error.
+                focusView.requestFocus();
+            } else {
+                // Show a progress spinner, and kick off a background task to
+                // perform the user login attempt.
+                //showProgress(true);
+                mAuthTask = new UserLoginTask();
+                mAuthTask.execute((Void) null);
+            }
+        }else{  //login without Network
+            if(preferences.getString(PREF_ID,"").equals("")){
+                Toast.makeText(getApplicationContext(),"need to connect network",Toast.LENGTH_SHORT).show();
+            }
+            String savedID = preferences.getString(PREF_ID,"");
+            String savedPW = preferences.getString(PREF_PW,"");
+            if(savedID.equals(id) && savedPW.equals(password)){
+                //start to next page
+            }
         }
     }
 
-    private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
-        return email.contains("@");
-    }
-
-    private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 4;
-    }
 
     /**
      * Shows the progress UI and hides the login form.
      */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    private void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    //mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
-
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-        }
-    }
+//    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+//    private void showProgress(final boolean show) {
+//        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+//        // for very easy animations. If available, use these APIs to fade-in
+//        // the progress spinner.
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+//            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+//
+//            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+//            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
+//                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+//                @Override
+//                public void onAnimationEnd(Animator animation) {
+//                    //mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+//                }
+//            });
+//
+//            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+//            mProgressView.animate().setDuration(shortAnimTime).alpha(
+//                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+//                @Override
+//                public void onAnimationEnd(Animator animation) {
+//                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+//                }
+//            });
+//        } else {
+//            // The ViewPropertyAnimator APIs are not available, so simply show
+//            // and hide the relevant UI components.
+//            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+//            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+//        }
+//    }
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
@@ -304,46 +309,61 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+    public class UserLoginTask extends AsyncTask<Void, Void, String> {
 
-        private final String mID;
-        private final String mPassword;
+        private HTTPClient client;
+        private String result;
+        XmlParser parser;
 
-        UserLoginTask(String email, String password) {
-            mID = email;
-            mPassword = password;
+        UserLoginTask() {
+            result = "";
+            XmlWriter writer = new XmlWriter();
+            client = new HTTPClient();
+            client.setDoc(writer.getLoginXml(id, password));
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
+        protected String doInBackground(Void... params) {
             try {
                 // Simulate network access.
+                result = client.connect();
+
+                //get keyCD  result = client.getKey();
+
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
-                return false;
+                return e.toString();
             }
 
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mID)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
-
-            // TODO: register the new account here.
-            return true;
+            return result;
         }
 
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
 
-            if (success) {
-                finish();
+        @Override
+        protected void onPostExecute(final String result) {
+            mAuthTask = null;
+            //showProgress(false);
+            parser = new XmlParser();
+
+            if(result.equals("connection error2")){
+
+                Toast.makeText(getApplicationContext(),result,Toast.LENGTH_SHORT).show();
+            }
+            else if (parser.resForLogin(result)) {
+                Log.d("check","success");
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putBoolean(LOG_IN, true);
+                editor.putString(PREF_ID, id);
+                editor.putString(PREF_PW, password);
+                editor.putString(PREF_KEY, parser.getKey());
+                editor.putString(PATIENT_NAME, parser.getPName());
+                editor.commit();
+                // server에게 login 인증 후 phr data 요청
+
+
+                Intent myAct1 = new Intent(Login.this, MainTab.class);
+                startActivity(myAct1);
+                //start next Activity
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
@@ -353,7 +373,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
         @Override
         protected void onCancelled() {
             mAuthTask = null;
-            showProgress(false);
+            //showProgress(false);
         }
     }
 }

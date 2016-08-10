@@ -7,6 +7,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -80,7 +81,7 @@ public class MainTab extends AppCompatActivity {
         int id = item.getItemId();
 
         //home 버튼 눌렀을때
-        if (id == android.R.id.home){
+        if (id == android.R.id.home) {
             Intent myAct1 = new Intent(getApplicationContext(), Login.class);
             Toast.makeText(this, "log out", Toast.LENGTH_SHORT).show();
             //버튼 눌렀을때 액티비티 초기화
@@ -98,7 +99,7 @@ public class MainTab extends AppCompatActivity {
     }
 
     //tab에서 보여줄 탭 fragment 이름
-   private void setupViewPager(ViewPager viewPager) {
+    private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFrag(new FragmentPHR(), "PHR");
         //adapter.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -107,7 +108,7 @@ public class MainTab extends AppCompatActivity {
         viewPager.setAdapter(adapter);
     }
 
-    class ViewPagerAdapter extends FragmentPagerAdapter {
+    class ViewPagerAdapter extends FragmentStatePagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
         private final List<String> mFragmentTitleList = new ArrayList<>();
 
@@ -119,6 +120,12 @@ public class MainTab extends AppCompatActivity {
         public Fragment getItem(int position) {
             return mFragmentList.get(position);
         }
+
+        //fragment 초기화 안될 시에 추가 할 것
+//        @Override
+//        public int getItemPosition(Object item) {
+//            return POSITION_NONE;
+//        }
 
         @Override
         public int getCount() {
