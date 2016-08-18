@@ -12,6 +12,7 @@ import org.xml.sax.SAXException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Objects;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -27,6 +28,7 @@ public class XmlParser {
     private String mData = "";
     private String key;
     private String pName;
+    private PHR phr;
     DocumentBuilderFactory factory;
     DocumentBuilder builder;
 
@@ -37,6 +39,33 @@ public class XmlParser {
 
     public Objects xmlParsing() {
         return null;
+    }
+    public int checkResponse(String data) {
+        int response = 0;
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            mData = data;
+
+            InputStream istream = new
+                    ByteArrayInputStream(mData.getBytes("utf-8"));
+            Document doc = builder.parse(istream);
+            Node node = doc.getFirstChild();
+
+
+            NamedNodeMap Attrs = node.getAttributes();
+            Node attr = Attrs.item(0);
+            response = Integer.valueOf(attr.getNodeValue());
+        } catch (SAXException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        }
+        return response;
     }
 
     public boolean resForLogin(String data) { //check response for login
@@ -85,7 +114,9 @@ public class XmlParser {
     public String getPName(){
         return pName;
     }
-
+    public PHR getPhrObject(String data){
+        return phr;
+    }
 }
 
 

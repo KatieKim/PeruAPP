@@ -5,6 +5,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -52,16 +53,12 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
      */
     private static final int REQUEST_READ_CONTACTS = 0;
     // preference to preserve user's status for networkless environment
-    final static String PREF_FILE_NAME = "Peru_PHR";
-    final static String PREF_ID = "PID";
-    final static String PREF_PW = "pw";
-    final static String PREF_KEY = "keyCD";
-    final static String LOG_IN = "Log_in";
-    final static String PATIENT_NAME = "pName";
-    private SharedPreferences preferences;
 
+    private SharedPreferences preferences;
+    private ProgressDialog progressDoalog;
     private String id;
     private String password;
+    private boolean flag = false;
     /**
      * A dummy authentication store containing known user names and passwords.
      * TODO: remove after connecting to a real authentication system.
@@ -87,20 +84,8 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
         // Set up the login form.
         mIDView = (AutoCompleteTextView) findViewById(R.id.id);
         populateAutoComplete();
-        preferences = getSharedPreferences(PREF_FILE_NAME, Activity.MODE_PRIVATE);
+        preferences = getSharedPreferences(PreferencePutter.PREF_FILE_NAME, Activity.MODE_PRIVATE);
         mPasswordView = (EditText) findViewById(R.id.password);
-        //TODO: 로그인 구현 주석 풀기
-//        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-//            @Override
-//            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-//                if (id == R.id.login || id == EditorInfo.IME_NULL) {
-//                    attemptLogin();
-//                    return true;
-//                }
-//                return false;
-//            }
-//        });
-
         Button mEmailSignInButton = (Button) findViewById(R.id.login_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -180,7 +165,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
             // Check for a valid password, if the user entered one.
             if (password.equals("")) {
                 mPasswordView.setError("this file is required");
-                Log.d("check","pw");
+                Log.d("check", "pw");
                 focusView = mPasswordView;
                 cancel = true;
             }
@@ -201,55 +186,46 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
                 //showProgress(true);
                 mAuthTask = new UserLoginTask();
                 mAuthTask.execute((Void) null);
+                progressDoalog = ProgressDialog.show(this,"","wait",true);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            while (!flag) {
+                            }
+                            progressDoalog.dismiss();
+                            flag = false;
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
             }
-        }else{  //login without Network
-            if(preferences.getString(PREF_ID,"").equals("")){
-                Toast.makeText(getApplicationContext(),"need to connect network",Toast.LENGTH_SHORT).show();
-            }
-            String savedID = preferences.getString(PREF_ID,"");
-            String savedPW = preferences.getString(PREF_PW,"");
-            if(savedID.equals(id) && savedPW.equals(password)){
-                //start to next page
+
+        } else {  //login without Network
+            if (preferences.getString(PreferencePutter.PREF_ID, "").equals("")) {
+                Toast.makeText(getApplicationContext(), "need to connect network", Toast.LENGTH_SHORT).show();
+            } else {
+                String savedID = preferences.getString(PreferencePutter.PREF_ID, "");
+                String savedPW = preferences.getString(PreferencePutter.PREF_PW, "");
+                if (!savedID.equals(id)) {
+                    Toast.makeText(getApplicationContext(), "기존의 사용자 id와 일치하지 않습니다.\n새로운 id로 로그인을 원하시면 network연결을 확인해주세요", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    if (savedID.equals(id) && savedPW.equals(password)) {
+                        //start to next page
+                        Intent myAct1 = new Intent(Login.this, MainTab.class);
+                        startActivity(myAct1);
+                    }
+                    else{
+                        Toast.makeText(getApplicationContext(), "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
+
+                    }
+                }
+
             }
         }
     }
-
-
-    /**
-     * Shows the progress UI and hides the login form.
-     */
-//    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-//    private void showProgress(final boolean show) {
-//        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-//        // for very easy animations. If available, use these APIs to fade-in
-//        // the progress spinner.
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-//            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-//
-//            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-//            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
-//                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-//                @Override
-//                public void onAnimationEnd(Animator animation) {
-//                    //mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-//                }
-//            });
-//
-//            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-//            mProgressView.animate().setDuration(shortAnimTime).alpha(
-//                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-//                @Override
-//                public void onAnimationEnd(Animator animation) {
-//                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-//                }
-//            });
-//        } else {
-//            // The ViewPropertyAnimator APIs are not available, so simply show
-//            // and hide the relevant UI components.
-//            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-//            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-//        }
-//    }
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
@@ -276,8 +252,6 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
             emails.add(cursor.getString(ProfileQuery.ADDRESS));
             cursor.moveToNext();
         }
-
-        addEmailsToAutoComplete(emails);
     }
 
     @Override
@@ -285,14 +259,6 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
 
     }
 
-    private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
-        //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(Login.this,
-                        android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
-
-        mIDView.setAdapter(adapter);
-    }
 
 
     private interface ProfileQuery {
@@ -324,17 +290,16 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
 
         @Override
         protected String doInBackground(Void... params) {
+            // Simulate network access.
+            result = client.connect();
+
+            //get keyCD  result = client.getKey();
+
             try {
-                // Simulate network access.
-                result = client.connect();
-
-                //get keyCD  result = client.getKey();
-
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
-                return e.toString();
+                e.printStackTrace();
             }
-
             return result;
         }
 
@@ -342,22 +307,28 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
         @Override
         protected void onPostExecute(final String result) {
             mAuthTask = null;
+            flag = true;
             //showProgress(false);
             parser = new XmlParser();
 
-            if(result.equals("connection error2")){
+            if (result.equals("connection error")) {
 
-                Toast.makeText(getApplicationContext(),result,Toast.LENGTH_SHORT).show();
-            }
-            else if (parser.resForLogin(result)) {
-                Log.d("check","success");
+                Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
+            } else if (parser.resForLogin(result)) {
+                Log.d("check", result);
+                String savedID = preferences.getString(PreferencePutter.PREF_ID, "null");
                 SharedPreferences.Editor editor = preferences.edit();
-                editor.putBoolean(LOG_IN, true);
-                editor.putString(PREF_ID, id);
-                editor.putString(PREF_PW, password);
-                editor.putString(PREF_KEY, parser.getKey());
-                editor.putString(PATIENT_NAME, parser.getPName());
+
+                if (!savedID.equals(id) && !savedID.equals("null")) {  //기존의 login 계정이 아닌 새로운 계정으로 로그인 헀다면 기존의 저장한 기록들은 삭제
+                    editor.clear().commit();
+                }
+                editor.putBoolean(PreferencePutter.LOG_IN, true);
+                editor.putString(PreferencePutter.PREF_ID, id);
+                editor.putString(PreferencePutter.PREF_PW, password);
+                editor.putString(PreferencePutter.PREF_KEY, parser.getKey());
+                editor.putString(PreferencePutter.PATIENT_NAME, parser.getPName());
                 editor.commit();
+                Log.d("http get", parser.getKey() + "/" + parser.getPName());
                 // server에게 login 인증 후 phr data 요청
 
 
@@ -373,6 +344,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
         @Override
         protected void onCancelled() {
             mAuthTask = null;
+            flag = true;
             //showProgress(false);
         }
     }

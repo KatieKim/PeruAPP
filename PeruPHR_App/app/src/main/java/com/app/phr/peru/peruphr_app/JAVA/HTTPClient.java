@@ -48,14 +48,19 @@ public class HTTPClient {
         try {
             URL url = new URL(LINK);
             URLConnection conn = url.openConnection();
+            conn.setConnectTimeout(10000);
+
             conn.setDoOutput(true);
+            conn.setDoInput(true);
             OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
             Log.d("http send",request);
             wr.write(request);
             wr.flush();
+            wr.close();
             Log.d("http check","check1");
 
             reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
 
             StringBuilder sb = new StringBuilder();
             String line = "";
@@ -65,12 +70,14 @@ public class HTTPClient {
                 sb.append(line);
                 Log.d("http get",line);
                 result += line;
-                break;
             }
+            result = "<?xml version='1.0' encoding='UTF-8'?>\n" +
+                    "<Response statusCode='100'>\n" + "<KeyCD>1234512345</KeyCD>\n" +"<PatientName>Daniel</PatientName>\n" +
+                    "</Response>\n";
+            Log.d("result",result);
             Log.d("xml","result : "+sb.toString());
         }catch (FileNotFoundException e){
             Log.d("err",e.toString());
-            return "connection error";
         }
         catch (MalformedURLException e) {
             Log.d("err",e.toString());

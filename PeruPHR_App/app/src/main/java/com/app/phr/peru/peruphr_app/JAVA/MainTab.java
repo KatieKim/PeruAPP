@@ -1,6 +1,8 @@
 package com.app.phr.peru.peruphr_app.JAVA;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -15,9 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.app.phr.peru.peruphr_app.Fragment.FragmentMyInfo;
-import com.app.phr.peru.peruphr_app.Fragment.FragmentPHR;
-import com.app.phr.peru.peruphr_app.Fragment.FragmentEducationInfo;
+
 import com.app.phr.peru.peruphr_app.R;
 
 import java.util.ArrayList;
@@ -25,6 +25,8 @@ import java.util.List;
 
 public class MainTab extends AppCompatActivity {
 
+    private SharedPreferences preferences;
+    private SharedPreferences.Editor edit;
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -82,6 +84,10 @@ public class MainTab extends AppCompatActivity {
 
         //home 버튼 눌렀을때
         if (id == android.R.id.home) {
+            preferences = getSharedPreferences(PreferencePutter.PREF_FILE_NAME, Activity.MODE_PRIVATE);
+            edit = preferences.edit();
+            edit.putBoolean(PreferencePutter.LOG_IN, false);
+            edit.commit();
             Intent myAct1 = new Intent(getApplicationContext(), Login.class);
             Toast.makeText(this, "log out", Toast.LENGTH_SHORT).show();
             //버튼 눌렀을때 액티비티 초기화
@@ -90,17 +96,15 @@ public class MainTab extends AppCompatActivity {
             return true;
         }
 
-//        //refresh 눌렀을 때
-//        if (id == R.id.action_button) {
-//            Toast.makeText(this, "Refresh success", Toast.LENGTH_SHORT).show();
-//            return true;
-//        }
         return super.onOptionsItemSelected(item);
     }
 
     //tab에서 보여줄 탭 fragment 이름
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        if(NetworkUtil.getConnectivityStatusBoolean(this)){
+
+        }
         adapter.addFrag(new FragmentPHR(), "PHR");
         //adapter.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         adapter.addFrag(new FragmentEducationInfo(), "Education Info");

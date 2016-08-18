@@ -1,35 +1,35 @@
 package com.app.phr.peru.peruphr_app.JAVA;
 
+import java.util.ArrayList;
+import java.util.Date;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Date;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 /**
- * Created by chiyo on 2016-08-04.
+ * Created by omop on 2016-08-17.
  */
 public class PHR {
+    private String allergy_d, allergy_v;
 
-    // after get data
-    private double height;
-    private double weight;
-    private int age;
-    private String blood;
-    private String sideEffect;
-    private String allergy;
-    public PHR(double height, double weight, int age, String blood, String sideEffect, String allergy){
-        this.height = height;
-        this.weight = weight;
-        this.age = age;
-        this.blood = blood;
-        this.sideEffect = sideEffect;
-        this.allergy = allergy;
-    }
-    public void setHeight(double height){this.height = height;}
-    public void setWeight(double weight){this.weight = weight;}
-    public void setAge (int age){this.age = age;}
-    public void setBlood(String blood){this.blood = blood;}
-    public void setSideEffect(String sideEffect){this.sideEffect = sideEffect;}
-    public void setAllergy(String allergy){this.allergy = allergy;}
-    public double getHeight(){return this.height;}
-    public double getWeight(){return this.weight;}
-    public String getBlood(){return this.blood;}
-    public String getSideEffect(){return this.sideEffect;}
-    public String getAllergy(){return this.allergy;}
+//    public PHR() {
+//        this.allergy_d = null;
+//        this.allergy_v = null;
+//    }
+
+    public void setAllergy_d(String allergy_d) {this.allergy_d = allergy_d;}
+    public void setAllergy_v(String allergy_v) {this.allergy_v = allergy_v;}
+    public String getAllergy_d() {return this.allergy_d;}
+    public String getAllergy_v() {return this.allergy_v;}
+
 
 }

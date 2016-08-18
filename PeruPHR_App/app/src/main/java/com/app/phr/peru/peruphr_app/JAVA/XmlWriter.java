@@ -15,6 +15,7 @@ import javax.xml.parsers.ParserConfigurationException;
 public class XmlWriter {
     private String id;
     private String pw;
+    private String newPw;
     private String key;
     private Document doc;
     private String type;
@@ -29,6 +30,8 @@ public class XmlWriter {
 
     public Document getForPhr(String id, String key) {
         this.type = "PHR";
+        this.id = id;
+        this.key = key;
         makeXMLforPHR();
         return doc;
     }
@@ -38,6 +41,16 @@ public class XmlWriter {
         this.pw = pw;
         this.type = "Login";
         makeXMLforLogin();
+        return doc;
+
+    }
+    public Document getXmlForChange(String id, String key, String oldPw, String newPw) {
+        this.id = id;
+        this.pw = oldPw;
+        this.key = key;
+        this.newPw = newPw;
+        this.type = "ChangePassword";
+        makeXMLforChangePW();
         return doc;
 
     }
@@ -62,7 +75,7 @@ public class XmlWriter {
             e.printStackTrace();
         }
     }
-    private void makeXMLforChangePW(String oldPW, String newPW) {
+    private void makeXMLforChangePW() {
         try {
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -78,9 +91,9 @@ public class XmlWriter {
             Element idElement = doc.createElement("PatientID");
             idElement.appendChild(doc.createTextNode(pw));
             Element currentPwElement = doc.createElement("OldPW");
-            currentPwElement.appendChild(doc.createTextNode(oldPW));
+            currentPwElement.appendChild(doc.createTextNode(pw));
             Element newPwElement = doc.createElement("NewPW");
-            newPwElement.appendChild(doc.createTextNode(newPW));
+            newPwElement.appendChild(doc.createTextNode(newPw));
 
             root.appendChild(idElement);
         } catch (ParserConfigurationException e) {

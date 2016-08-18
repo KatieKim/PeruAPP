@@ -1,4 +1,4 @@
-package com.app.phr.peru.peruphr_app.Fragment;
+package com.app.phr.peru.peruphr_app.JAVA;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

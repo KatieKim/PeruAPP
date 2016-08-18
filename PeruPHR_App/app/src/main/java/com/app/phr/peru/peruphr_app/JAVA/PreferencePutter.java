@@ -13,9 +13,6 @@ public class PreferencePutter {
     final static String PREF_KEY = "keyCD";
     final static String LOG_IN = "Log_in";
     final static String PATIENT_NAME = "pName";
-    private SharedPreferences mPreferences;
-    public PreferencePutter(SharedPreferences preferences){
-        mPreferences = preferences;
+    final static String PHR = "PHR";
 
-    }
 }
