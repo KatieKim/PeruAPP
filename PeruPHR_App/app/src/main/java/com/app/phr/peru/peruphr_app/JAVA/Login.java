@@ -83,20 +83,20 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
         setContentView(R.layout.login);
         // Set up the login form.
         mIDView = (AutoCompleteTextView) findViewById(R.id.id);
-        populateAutoComplete();
-        preferences = getSharedPreferences(PreferencePutter.PREF_FILE_NAME, Activity.MODE_PRIVATE);
-        mPasswordView = (EditText) findViewById(R.id.password);
-        Button mEmailSignInButton = (Button) findViewById(R.id.login_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                attemptLogin();
-            }
-        });
+            populateAutoComplete();
+            preferences = getSharedPreferences(PreferencePutter.PREF_FILE_NAME, Activity.MODE_PRIVATE);
+            mPasswordView = (EditText) findViewById(R.id.password);
+            Button mEmailSignInButton = (Button) findViewById(R.id.login_button);
+            mEmailSignInButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    attemptLogin();
+                }
+            });
 
-        mLoginFormView = findViewById(R.id.login_form);
-        //mProgressView = findViewById(R.id.login_progress);
-    }
+            mLoginFormView = findViewById(R.id.login_form);
+            //mProgressView = findViewById(R.id.login_progress);
+        }
 
     private void populateAutoComplete() {
         if (!mayRequestContacts()) {
@@ -180,6 +180,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
                 // There was an error; don't attempt login and focus the first
                 // form field with an error.
                 focusView.requestFocus();
+
             } else {
                 // Show a progress spinner, and kick off a background task to
                 // perform the user login attempt.
