@@ -28,6 +28,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -83,20 +84,32 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
         setContentView(R.layout.login);
         // Set up the login form.
         mIDView = (AutoCompleteTextView) findViewById(R.id.id);
-            populateAutoComplete();
-            preferences = getSharedPreferences(PreferencePutter.PREF_FILE_NAME, Activity.MODE_PRIVATE);
-            mPasswordView = (EditText) findViewById(R.id.password);
-            Button mEmailSignInButton = (Button) findViewById(R.id.login_button);
-            mEmailSignInButton.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    attemptLogin();
-                }
-            });
+        populateAutoComplete();
+        preferences = getSharedPreferences(PreferencePutter.PREF_FILE_NAME, Activity.MODE_PRIVATE);
+        mPasswordView = (EditText) findViewById(R.id.password);
+        Button mIDSignInButton = (Button) findViewById(R.id.login_button);
+        mIDSignInButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                attemptLogin();
+            }
+        });
 
-            mLoginFormView = findViewById(R.id.login_form);
-            //mProgressView = findViewById(R.id.login_progress);
-        }
+        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView view, int keyCode, KeyEvent event) {
+                if (keyCode == EditorInfo.IME_ACTION_DONE)
+                    attemptLogin();
+                return true;
+            }
+
+        });
+
+
+        //mLoginFormView = findViewById(R.id.login_form);
+        //mProgressView = findViewById(R.id.login_progress);
+    }
+
 
     private void populateAutoComplete() {
         if (!mayRequestContacts()) {
@@ -170,7 +183,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
                 cancel = true;
             }
 
-            // Check for a valid email address.
+            // Check for a valid ID.
             if (id.equals("")) {
                 mIDView.setError(getString(R.string.error_field_required));
                 focusView = mIDView;
@@ -187,7 +200,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
                 //showProgress(true);
                 mAuthTask = new UserLoginTask();
                 mAuthTask.execute((Void) null);
-                progressDoalog = ProgressDialog.show(this,"","wait",true);
+                progressDoalog = ProgressDialog.show(this, "", "wait", true);
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -211,14 +224,12 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
                 String savedPW = preferences.getString(PreferencePutter.PREF_PW, "");
                 if (!savedID.equals(id)) {
                     Toast.makeText(getApplicationContext(), "기존의 사용자 id와 일치하지 않습니다.\n새로운 id로 로그인을 원하시면 network연결을 확인해주세요", Toast.LENGTH_SHORT).show();
-                }
-                else {
+                } else {
                     if (savedID.equals(id) && savedPW.equals(password)) {
                         //start to next page
                         Intent myAct1 = new Intent(Login.this, MainTab.class);
                         startActivity(myAct1);
-                    }
-                    else{
+                    } else {
                         Toast.makeText(getApplicationContext(), "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
 
                     }
@@ -235,22 +246,20 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
                 Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
                         ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
 
-                // Select only email addresses.
+                // Select only ID.
                 ContactsContract.Contacts.Data.MIMETYPE +
                         " = ?", new String[]{ContactsContract.CommonDataKinds.Email
                 .CONTENT_ITEM_TYPE},
 
-                // Show primary email addresses first. Note that there won't be
-                // a primary email address if the user hasn't specified one.
                 ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        List<String> emails = new ArrayList<>();
+        List<String> IDs = new ArrayList<>();
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            emails.add(cursor.getString(ProfileQuery.ADDRESS));
+            IDs.add(cursor.getString(ProfileQuery.ADDRESS));
             cursor.moveToNext();
         }
     }
@@ -259,7 +268,6 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
 
     }
-
 
 
     private interface ProfileQuery {

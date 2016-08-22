@@ -85,7 +85,7 @@ public class FragmentPHR extends Fragment {
             // Simulate network access.
             result = client.connect();
             result = "<?xml version='1.0' encoding='utf-8'?>\n" +
-                    "<Response StatusCode=\"202\">\n" +
+                    "<Response StatusCode=\"100\">\n" +
                     "  <PatientSummary>\n" +
                     "    <Allergys>\n" +
                     "      <Allergy>\n" +
@@ -241,7 +241,7 @@ public class FragmentPHR extends Fragment {
 
         View rootView;
         if(getPHR) {
-            rootView = inflater.inflate(R.layout.phr_view_layout, container, false);
+            rootView = inflater.inflate(R.layout.fragment_phr, container, false);
 
             phr = new PHR();
             tb1 = (TableLayout) rootView.findViewById(R.id.table1);

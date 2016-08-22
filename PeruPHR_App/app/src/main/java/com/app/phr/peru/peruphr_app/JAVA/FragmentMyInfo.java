@@ -11,11 +11,14 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.app.phr.peru.peruphr_app.R;
@@ -52,6 +55,7 @@ public class FragmentMyInfo extends Fragment {
         newPW1 = (EditText) getActivity().findViewById(R.id.MyInfo_NewPassword1);
         newPW2 = (EditText) getActivity().findViewById(R.id.MyInfo_NewPassword2);
         btn = (Button) getActivity().findViewById(R.id.changePW);
+
         btn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
@@ -78,6 +82,37 @@ public class FragmentMyInfo extends Fragment {
                 else{
                     Toast.makeText(getActivity().getApplicationContext(), "need to connect network", Toast.LENGTH_SHORT).show();
                 }
+            }
+
+        });
+
+        newPW2.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView view, int keyCode, KeyEvent event) {
+                if (keyCode == EditorInfo.IME_ACTION_DONE){
+                    String old, new1, new2;
+
+                old = oldPW.getText().toString();
+                new1 = newPW1.getText().toString();
+                new2 = newPW2.getText().toString();
+                SharedPreferences preferences = getActivity().getSharedPreferences(PreferencePutter.PREF_FILE_NAME, Activity.MODE_PRIVATE);
+
+                if (!old.equals("") && !new1.equals("") && !new2.equals("")) {
+                    if (!new1.equals(new2)) {
+                        Toast.makeText(getActivity().getApplicationContext(), "different", Toast.LENGTH_SHORT).show();
+                        newPW1.setText("");
+                        newPW2.setText("");
+                    } else {
+                        request(old, new1);
+                    }
+                } else {
+                    // old password가 틀렸을때 (판단을 어디서?)
+                }
+            }
+            else{
+                Toast.makeText(getActivity().getApplicationContext(), "need to connect network", Toast.LENGTH_SHORT).show();
+            }
+                return true;
             }
 
         });
