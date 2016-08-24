@@ -28,11 +28,12 @@ import com.app.phr.peru.peruphr_app.R;
 public class FragmentMyInfo extends Fragment {
     private EditText oldPW;
     private EditText newPW1, newPW2;
-    private Button btn;
+    private Button btn, log_out;
     XmlParser parser;
     private String key, id;
     private PwChangeTask task = null;
     private SharedPreferences preferences;
+    private SharedPreferences.Editor edit;
     private ProgressDialog progressDoalog;
     private Boolean flag = false;
 
@@ -52,12 +53,22 @@ public class FragmentMyInfo extends Fragment {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        Log.d("frag","pause ");
+        hideKeyboard();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
+
         oldPW = (EditText) getActivity().findViewById(R.id.MyInfo_password);
         newPW1 = (EditText) getActivity().findViewById(R.id.MyInfo_NewPassword1);
         newPW2 = (EditText) getActivity().findViewById(R.id.MyInfo_NewPassword2);
+        log_out = (Button) getActivity().findViewById(R.id.log_out);
         reset();
+
         btn = (Button) getActivity().findViewById(R.id.changePW);
 
         btn.setOnClickListener(new View.OnClickListener() {
@@ -82,7 +93,7 @@ public class FragmentMyInfo extends Fragment {
                     }
                     if (!old.equals("") && !new1.equals("") && !new2.equals("")) {
                         if (!new1.equals(new2)) {
-                            Toast.makeText(getActivity().getApplicationContext(), "different", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity().getApplicationContext(), "diferente", Toast.LENGTH_SHORT).show();
                             newPW1.setText("");
                             newPW2.setText("");
                             newPW1.requestFocus();
@@ -98,11 +109,24 @@ public class FragmentMyInfo extends Fragment {
                     newPW1.setText("");
                     newPW2.setText("");
 
-                    Toast.makeText(getActivity().getApplicationContext(), "need to connect network", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity().getApplicationContext(), "deberá conectar a la red", Toast.LENGTH_SHORT).show();
 
                 }
             }
 
+        });
+        log_out.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                edit = preferences.edit();
+                edit.putBoolean(PreferencePutter.LOG_IN, false);
+                edit.commit();
+                Toast.makeText(getActivity(), "cerrar sesión", Toast.LENGTH_SHORT).show();
+                Intent myAct1 = new Intent(getActivity().getApplicationContext(), Login.class);
+                myAct1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(myAct1);
+                //버튼 눌렀을때 액티비티 초기화
+            }
         });
 
         newPW2.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -118,7 +142,7 @@ public class FragmentMyInfo extends Fragment {
 
                     if (!old.equals("") && !new1.equals("") && !new2.equals("")) {
                         if (!new1.equals(new2)) {
-                            Toast.makeText(getActivity().getApplicationContext(), "different", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity().getApplicationContext(), "diferente", Toast.LENGTH_SHORT).show();
                             newPW1.setText("");
                             newPW2.setText("");
                         } else {
@@ -126,7 +150,8 @@ public class FragmentMyInfo extends Fragment {
                         }
                     }
                 } else {
-                    Toast.makeText(getActivity().getApplicationContext(), "need to connect network", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity().getApplicationContext(),
+                            "deberá conectar a la red", Toast.LENGTH_SHORT).show();
                 }
                 return true;
             }
@@ -149,7 +174,6 @@ public class FragmentMyInfo extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        hideKeyboard();
 
         return inflater.inflate(R.layout.fragment_myinfo, container, false);
     }
@@ -203,10 +227,10 @@ public class FragmentMyInfo extends Fragment {
                 int response = parser.checkResponse(result);
                 if (response == 200) {
 
-                    Toast.makeText(getActivity().getApplicationContext(), "Fail to chage password", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity().getApplicationContext(), "Dejar de chage contraseña", Toast.LENGTH_SHORT).show();
                 } else if (response == 100) {
                     Log.d("myinfo", "change success");
-                    Toast.makeText(getActivity().getApplicationContext(), "change success", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity().getApplicationContext(), "cambiar el éxito", Toast.LENGTH_SHORT).show();
                     SharedPreferences.Editor editor = preferences.edit();
                     editor.putString(PreferencePutter.PREF_PW, old);
                     editor.commit();
@@ -216,16 +240,12 @@ public class FragmentMyInfo extends Fragment {
 
                     //start next Activity
                 } else {
-                    Toast.makeText(getActivity().getApplicationContext(), "server error", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity().getApplicationContext(), "Error del Servidor", Toast.LENGTH_SHORT).show();
 
                 }
             }
         }
-        public void hideKeyboard()
-        {
-            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
-            imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-        }
+
         @Override
         protected void onCancelled() {
             task = null;

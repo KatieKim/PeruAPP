@@ -20,7 +20,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 
-import com.app.phr.peru.peruphr_app.BackPressCloseHandler;
+import com.app.phr.peru.peruphr_app.JAVA.BackPressCloseHandler;
 import com.app.phr.peru.peruphr_app.R;
 
 import java.util.ArrayList;
@@ -58,31 +58,33 @@ public class MainTab extends AppCompatActivity {
         //새로고침 아이콘 표시
         //getSupportActionBar().setDisplayShowCustomEnabled(true);
         // 홈 아이콘 표시
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+       // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
 
         //tab레이아웃을 사용함. main_tab.xml과 연결되어 있음
         tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(viewPager);
+        setupTabIcons();
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-              if(tab.getPosition() != 2) {
-                  Log.d("err","hide keyboard");
-             //     hideKeyboard();
-              }
+
+                viewPager.setCurrentItem(tab.getPosition());
+
             }
+
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
+
             }
+
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
 
             }
         });
-        tabLayout.setupWithViewPager(viewPager);
-        setupTabIcons();
     }
 
     public void hideKeyboard()
@@ -112,25 +114,7 @@ public class MainTab extends AppCompatActivity {
 //    }
 
     //메뉴 이벤트 처리
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
 
-        //home 버튼 눌렀을때
-        if (id == android.R.id.home) {
-            edit = preferences.edit();
-            edit.putBoolean(PreferencePutter.LOG_IN, false);
-            edit.commit();
-            Intent myAct1 = new Intent(getApplicationContext(), Login.class);
-            Toast.makeText(this, "log out", Toast.LENGTH_SHORT).show();
-            //버튼 눌렀을때 액티비티 초기화
-            myAct1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(myAct1);
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     //tab에서 보여줄 탭 fragment 이름
     private void setupViewPager(ViewPager viewPager) {

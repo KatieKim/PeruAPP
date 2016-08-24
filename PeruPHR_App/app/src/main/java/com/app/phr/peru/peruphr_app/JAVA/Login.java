@@ -30,6 +30,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -218,19 +219,25 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
 
         } else {  //login without Network
             if (preferences.getString(PreferencePutter.PREF_ID, "").equals("")) {
-                Toast.makeText(getApplicationContext(), "need to connect network", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),
+                        "deberá conectar a la red", Toast.LENGTH_SHORT).show();
+                hideKeyboard();
             } else {
                 String savedID = preferences.getString(PreferencePutter.PREF_ID, "");
                 String savedPW = preferences.getString(PreferencePutter.PREF_PW, "");
                 if (!savedID.equals(id)) {
                     Toast.makeText(getApplicationContext(), "기존의 사용자 id와 일치하지 않습니다.\n새로운 id로 로그인을 원하시면 network연결을 확인해주세요", Toast.LENGTH_SHORT).show();
+                    hideKeyboard();
                 } else {
                     if (savedID.equals(id) && savedPW.equals(password)) {
                         //start to next page
                         Intent myAct1 = new Intent(Login.this, MainTab.class);
                         startActivity(myAct1);
                     } else {
-                        Toast.makeText(getApplicationContext(), "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(),
+                                "contraseña diferente.", Toast.LENGTH_SHORT).show();
+                        mPasswordView.setText("");
+                        mPasswordView.requestFocus();
 
                     }
                 }
@@ -238,7 +245,13 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
             }
         }
     }
+    public void hideKeyboard()
+    {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+        Log.d("err", "phr hide keyboard");
 
+    }
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         return new CursorLoader(this,
@@ -347,7 +360,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
             } else {
            /*     mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();*/
-                Toast.makeText(getApplicationContext(),"일치하지않는 계정입니다.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),"contraseña diferente.", Toast.LENGTH_SHORT).show();
 
             }
         }

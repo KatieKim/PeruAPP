@@ -25,17 +25,10 @@
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:layout_marginBottom="10dp"
-
+            android:paddingRight="10dp"
             android:text="Change password"
             android:textStyle="bold"
-            android:textColor="#022E2B"
-            android:paddingBottom="10dp"
-            android:paddingLeft="0dp"
-            android:paddingRight="0dp"
-            android:paddingTop="10dp"
-            android:textSize="25dp">
-
-        </TextView>
+            android:textSize="25dp"></TextView>
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
@@ -46,7 +39,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="password"
-               android:imeActionId="@+id/login"
+                android:imeActionId="@+id/login"
                 android:imeActionLabel="@string/action_sign_in_short"
                 android:imeOptions="actionNext"
                 android:layout_marginLeft="30dp"
@@ -107,7 +100,7 @@
             android:id="@+id/changePW"
             style="?android:textAppearanceSmall"
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="55dp"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:layout_marginTop="16dp"
@@ -115,8 +108,20 @@
             android:background="@drawable/login_btn"
             android:text="Change"
             android:textSize="20dp"
-            android:textColor="#ffffff"
             android:textStyle="bold" />
-
+        <Button
+            android:id="@+id/log_out"
+            android:onClick="log_out"
+            style="?android:textAppearanceSmall"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="center"
+            android:background="@drawable/login_btn"
+            android:text="Log Out"
+            android:textSize="20dp"
+            android:textStyle="bold" />
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

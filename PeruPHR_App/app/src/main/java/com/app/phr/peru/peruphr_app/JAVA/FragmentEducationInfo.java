@@ -26,13 +26,9 @@ public class FragmentEducationInfo extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        hideKeyboard();
+     //   hideKeyboard();
 
         return inflater.inflate(R.layout.fragment_educationinfo, container, false);
     }
-    public void hideKeyboard()
-    {
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-    }
+
 }

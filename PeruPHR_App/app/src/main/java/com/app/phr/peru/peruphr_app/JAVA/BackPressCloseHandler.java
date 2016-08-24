@@ -1,4 +1,4 @@
-package com.app.phr.peru.peruphr_app;
+package com.app.phr.peru.peruphr_app.JAVA;
 
 /**
  * Created by omop on 2016-08-10.
