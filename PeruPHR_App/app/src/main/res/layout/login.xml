@@ -21,15 +21,20 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:orientation="vertical">
-
-            <ImageView
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text = "Perú PHR"
                 android:layout_marginRight="30dp"
                 android:layout_marginLeft="30dp"
                 android:layout_marginBottom="50dp"
                 android:layout_gravity="center"
-                android:background="@drawable/logo"/>
+                android:editable="false"
+                android:textSize="50dp"
+                android:textColor="@drawable/login_btn"
+                android:textColorHighlight="#7dbf7d"
+                android:textIsSelectable="false" />
+
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"

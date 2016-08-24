@@ -48,7 +48,7 @@ public class XmlParser {
             mData = data;
 
             InputStream istream = new
-                    ByteArrayInputStream(mData.getBytes("utf-8"));
+                    ByteArrayInputStream(mData.getBytes("UTF-8"));
             Document doc = builder.parse(istream);
             Node node = doc.getFirstChild();
 
@@ -74,9 +74,7 @@ public class XmlParser {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
             mData = data;
-            mData = "<?xml version='1.0' encoding='UTF-8'?>\n" +
-                    "<Response statusCode='100'>\n" +"<KeyCD>1234512345</KeyCD>\n +<PatientName>Daniel</PatientName>\n"+
-                    "</Response>\n";
+
 
             InputStream istream = new
                     ByteArrayInputStream(mData.getBytes("utf-8"));

@@ -1,6 +1,7 @@
 package com.app.phr.peru.peruphr_app.JAVA;
 
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -46,11 +47,12 @@ public class XmlWriter {
     }
     public Document getXmlForChange(String id, String key, String oldPw, String newPw) {
         this.id = id;
-        this.pw = oldPw;
         this.key = key;
+        this.pw = oldPw;
         this.newPw = newPw;
         this.type = "ChangePassword";
         makeXMLforChangePW();
+
         return doc;
 
     }
@@ -61,16 +63,17 @@ public class XmlWriter {
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
             doc = docBuilder.newDocument();
             Element root = doc.createElement("Request");
-            doc.appendChild(root);
             Element typeElement = doc.createElement("Type");
             typeElement.appendChild(doc.createTextNode(type));
             root.appendChild(typeElement);
             Element idElement = doc.createElement("PatientID");
             idElement.appendChild(doc.createTextNode(id));
             root.appendChild(idElement);
-            Element pwElement = doc.createElement("Password");
+            Element pwElement = doc.createElement("PW");
             pwElement.appendChild(doc.createTextNode(pw));
             root.appendChild(pwElement);
+            doc.appendChild(root);
+
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
         }
@@ -86,16 +89,18 @@ public class XmlWriter {
             typeElement.appendChild(doc.createTextNode(type));
             root.appendChild(typeElement);
             Element keyElement = doc.createElement("KeyCD");
-            keyElement.appendChild(doc.createTextNode(id));
+            keyElement.appendChild(doc.createTextNode(key));
             root.appendChild(keyElement);
             Element idElement = doc.createElement("PatientID");
-            idElement.appendChild(doc.createTextNode(pw));
+            idElement.appendChild(doc.createTextNode(id));
             Element currentPwElement = doc.createElement("OldPW");
             currentPwElement.appendChild(doc.createTextNode(pw));
             Element newPwElement = doc.createElement("NewPW");
             newPwElement.appendChild(doc.createTextNode(newPw));
 
             root.appendChild(idElement);
+            root.appendChild(currentPwElement);
+            root.appendChild(newPwElement);
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
         }

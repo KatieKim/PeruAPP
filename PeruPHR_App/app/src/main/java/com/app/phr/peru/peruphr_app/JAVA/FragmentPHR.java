@@ -11,9 +11,11 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.text.Layout;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -34,9 +36,10 @@ import java.io.InputStream;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+
 public class FragmentPHR extends Fragment {
     private PHR phr;
-    private  boolean getPHR = false;
+    private boolean getPHR = false;
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
     private XmlParser parser;
@@ -45,7 +48,8 @@ public class FragmentPHR extends Fragment {
     private requestPHRTask requestTask = null;
     private boolean flag = false;
     private String Phr;
-    TableLayout tb1, tb2;
+    TableLayout tb1, tb2, tb3;
+    public String title;
     public FragmentPHR() {
         parser = new XmlParser();
     }
@@ -84,81 +88,7 @@ public class FragmentPHR extends Fragment {
             String result = "";
             // Simulate network access.
             result = client.connect();
-            result = "<?xml version='1.0' encoding='utf-8'?>\n" +
-                    "<Response StatusCode=\"100\">\n" +
-                    "  <PatientSummary>\n" +
-                    "    <Allergys>\n" +
-                    "      <Allergy>\n" +
-                    "        <Date>2016-07-31</Date>\n" +
-                    "        <Value>home dust allergy</Value>\n" +
-                    "      </Allergy>\n" +
-                    "      <Allergy>\n" +
-                    "        <Date>2016-08-10</Date>\n" +
-                    "        <Value>nose allergy</Value>\n" +
-                    "      </Allergy>\n" +
-                    "    </Allergys>\n" +
-                    "    <AdverseReactions>\n" +
-                    "      <AdverseReaction>\n" +
-                    "        <Date>2016-07-31</Date>\n" +
-                    "        <Value>타이레놀 못먹음</Value>\n" +
-                    "      </AdverseReaction>\n" +
-                    "    </AdverseReactions>\n" +
-                    "    <PastHistorys>\n" +
-                    "      <PatientHistory>\n" +
-                    "        <Date>2016-07-31</Date>\n" +
-                    "        <Value>출산자녀수: 1</Value>\n" +
-                    "      </PatientHistory>\n" +
-                    "    </PastHistorys>\n" +
-                    "    <FamilyHistorys>\n" +
-                    "      <FamilyHistory>\n" +
-                    "        <Date>2016-07-31</Date>\n" +
-                    "        <Value>Alcohol 여부: Yes</Value>\n" +
-                    "      </FamilyHistory>\n" +
-                    "    </FamilyHistorys>\n" +
-                    "    <SosicalHistorys>\n" +
-                    "      <SosicalHistory>\n" +
-                    "        <Date>2016-07-31</Date>\n" +
-                    "        <Value>Alcohol 여부: Yes Alcohol 여부: Yes</Value>\n" +
-                    "      </SosicalHistory>\n" +
-                    "    </SosicalHistorys>\n" +
-                    "    <PhysicalMeasurement>\n" +
-                    "      <Height>\n" +
-                    "        <Date>2016-07-31</Date>\n" +
-                    "        <Value>173.0</Value>\n" +
-                    "      </Height>\n" +
-                    "      <Weight>\n" +
-                    "        <Date>2016-07-31</Date>\n" +
-                    "        <Value>78.0</Value>\n" +
-                    "      </Weight>\n" +
-                    "      <BloodPressure>\n" +
-                    "        <Date>2016-07-31</Date>\n" +
-                    "        <Value>88-122</Value>\n" +
-                    "      </BloodPressure>\n" +
-                    "      <Pulse>\n" +
-                    "        <Date>2016-07-31</Date>\n" +
-                    "        <Value>81</Value>\n" +
-                    "      </Pulse>\n" +
-                    "      <BloodType>\n" +
-                    "        <Date>2016-07-31</Date>\n" +
-                    "        <Value>AB</Value>\n" +
-                    "      </BloodType>\n" +
-                    "    </PhysicalMeasurement>\n" +
-                    "    <Medications>\n" +
-                    "      <Medication>\n" +
-                    "        <Date>2016-07-31</Date>\n" +
-                    "        <Code>k-1234</Code>\n" +
-                    "        <Value>비타500</Value>\n" +
-                    "      </Medication>\n" +
-                    "    </Medications>\n" +
-                    "    <TeleMedicines>\n" +
-                    "      <TeleMedicine>\n" +
-                    "        <Date>2016-07-31</Date>\n" +
-                    "        <Value>알레르기 진찰 후 비타500 투약 완료.</Value>\n" +
-                    "      </TeleMedicine>\n" +
-                    "    </TeleMedicines>\n" +
-                    "  </PatientSummary>\n" +
-                    "  <!--Patient Example 1-->\n" +
-                    "</Response>";
+
 
             if (result.equals("connection error")) {
                 setLayoutWithout_Net();
@@ -200,7 +130,13 @@ public class FragmentPHR extends Fragment {
         }
 
     }
+    public void hideKeyboard()
+    {
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+        Log.d("err", "phr hide keyboard");
 
+    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -238,55 +174,40 @@ public class FragmentPHR extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        hideKeyboard();
 
         View rootView;
         if(getPHR) {
             rootView = inflater.inflate(R.layout.fragment_phr, container, false);
-
             phr = new PHR();
             tb1 = (TableLayout) rootView.findViewById(R.id.table1);
             tb1.setStretchAllColumns(true);
             tb2 = (TableLayout) rootView.findViewById(R.id.table2);
             tb2.setStretchAllColumns(true);
+            tb3 = (TableLayout) rootView.findViewById(R.id.table3);
+            tb3.setStretchAllColumns(true);
 
-            setTb1Title();
-            Parsing();
-            Parsing();
-            Parsing();
-            setTb1Title();
-            Parsing();
-            Parsing();
-            Parsing();
-            setTb1Title();
-            Parsing();
-            Parsing();
-            Parsing();
-            setTb1Title();
-            Parsing();
-            Parsing();
-            Parsing();
+            AllergyParsing();
+            AdverseReactionParsing();
+            PastHistoryParsing();
+            FamilyHistoryParsing();
+            SocialHistoryParsing();
+            PM_HeightParsing();
+            PM_WeightParsing();
+            PM_BloodPressureParsing();
+            PM_PulseParsing();
+            PM_BloodTypeParsing();
+            MedicationParsing();
+            TeleMedicineParsing();
 
-        }
-        else{
+        } else {
             rootView = inflater.inflate(R.layout.non_phr, container, false);
         }
         return rootView;
 
-    }
-
-    public void failTb() {
-
-        TableRow tr_ti = new TableRow(getActivity());
-        tr_ti.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        TextView tb1_t = new TextView(getActivity());
-        tb1_t.setText("fail");
-    }
-
-    public void Parsing() {
+    }public void AllergyParsing() {
         try {
-
             String xml = Phr;
-
             //xml 읽어오기
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
@@ -297,20 +218,183 @@ public class FragmentPHR extends Fragment {
             Element order = doc.getDocumentElement();
             //노드 선언
             NodeList allergys = order.getElementsByTagName("Allergy");
-            //노드 length
 
-            for (int i = 0; i < allergys.getLength(); i++) {
-                NodeList allergys_date = order.getElementsByTagName("Date");
-                NodeList allergys_value = order.getElementsByTagName("Value");
-                Node a_date = allergys_date.item(i);
-                Node a_value = allergys_value.item(i);
-                Node value = a_value.getFirstChild();
-                Node date = a_date.getFirstChild();
-                //string에 값 넣기
-                phr.setAllergy_v(value.getNodeValue());
-                phr.setAllergy_d(date.getNodeValue());
+            //항목이 0개가 아니면 title 부르기
+            if (allergys.getLength() != 0) {
+                setTitle("Allergy");
+                setSubtitle2();
+            }
 
-                setTb1();
+            doc.getDocumentElement().normalize();
+            NodeList nodeList = doc.getElementsByTagName("Allergy");//여기 변경
+            int count = nodeList.getLength();
+            for (int i = 0; i < count; i++) {
+                Node node = nodeList.item(i);
+                String Date = node.getChildNodes().item(1).getFirstChild().getNodeValue();//여기변경
+                String Value = node.getChildNodes().item(3).getFirstChild().getNodeValue();
+                phr.setAllergy_d(Date);
+                phr.setAllergy_v(Value);
+                setXmlParsing2(phr.getAllergy_d(), phr.getAllergy_v());
+
+            }
+
+
+        } catch (Exception e) {
+            failTb();
+            //Toast.makeText(v.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void AdverseReactionParsing() {
+        try {
+            String xml = Phr;
+            //xml 읽어오기
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            InputStream istream = new ByteArrayInputStream(xml.getBytes("utf-8"));
+            Document doc = builder.parse(istream);
+
+            //xml element 읽어오기
+            Element element = doc.getDocumentElement();
+            //노드list 선언
+            NodeList AdverseReactions = element.getElementsByTagName("AdverseReaction");
+
+            //항목이 0개가 아니면 title 부르기
+            if (AdverseReactions.getLength() != 0) {
+                setTitle("AdverseReaction");
+                setSubtitle2();
+            }
+
+            doc.getDocumentElement().normalize();
+            NodeList nodeList = doc.getElementsByTagName("AdverseReaction");//여기 변경
+            int count = nodeList.getLength();
+            for (int i = 0; i < count; i++) {
+                Node node = nodeList.item(i);
+                String Date = node.getChildNodes().item(1).getFirstChild().getNodeValue();//여기변경
+                String Value = node.getChildNodes().item(3).getFirstChild().getNodeValue();
+                phr.setAdverseReaction_d(Date);
+                phr.setAdverseReaction_v(Value);
+                setXmlParsing2(phr.getAdverseReaction_d(), phr.getAdverseReaction_v());
+
+            }
+
+
+        } catch (Exception e) {
+            failTb();
+            //Toast.makeText(v.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void PastHistoryParsing() {
+        try {
+            String xml = Phr;
+            //xml 읽어오기
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            InputStream istream = new ByteArrayInputStream(xml.getBytes("utf-8"));
+            Document doc = builder.parse(istream);
+
+            //xml element 읽어오기
+            Element element = doc.getDocumentElement();
+            //노드list 선언
+            NodeList AdverseReactions = element.getElementsByTagName("PastHistory");
+
+            //항목이 0개가 아니면 title 부르기
+            if (AdverseReactions.getLength() != 0) {
+                setTitle("PastHistory");
+                setSubtitle2();
+            }
+
+            doc.getDocumentElement().normalize();
+            NodeList nodeList = doc.getElementsByTagName("PastHistory");//여기 변경
+            int count = nodeList.getLength();
+            for (int i = 0; i < count; i++) {
+                Node node = nodeList.item(i);
+                String date = node.getChildNodes().item(1).getFirstChild().getNodeValue();//여기변경
+                String value = node.getChildNodes().item(3).getFirstChild().getNodeValue();
+                phr.setPastHistory_d(date);
+                phr.setPastHistory_v(value);
+                setXmlParsing2(phr.getPastHistory_d(), phr.getPastHistory_v());
+
+            }
+
+
+        } catch (Exception e) {
+            failTb();
+            //Toast.makeText(v.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void FamilyHistoryParsing() {
+        try {
+            String xml = Phr;
+            //xml 읽어오기
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            InputStream istream = new ByteArrayInputStream(xml.getBytes("utf-8"));
+            Document doc = builder.parse(istream);
+
+            //xml element 읽어오기
+            Element element = doc.getDocumentElement();
+            //노드list 선언
+            NodeList AdverseReactions = element.getElementsByTagName("FamilyHistory");
+
+            //항목이 0개가 아니면 title 부르기
+            if (AdverseReactions.getLength() != 0) {
+                setTitle("FamilyHistory");
+                setSubtitle2();
+            }
+
+            doc.getDocumentElement().normalize();
+            NodeList nodeList = doc.getElementsByTagName("FamilyHistory");//여기 변경
+            int count = nodeList.getLength();
+            for (int i = 0; i < count; i++) {
+                Node node = nodeList.item(i);
+                String date = node.getChildNodes().item(1).getFirstChild().getNodeValue();
+                String value = node.getChildNodes().item(3).getFirstChild().getNodeValue();
+                phr.setFamilyHistory_d(date);//여기변경
+                phr.setFamilyHistory_v(value);
+                setXmlParsing2(phr.getFamilyHistory_d(), phr.getFamilyHistory_v());
+
+            }
+
+
+        } catch (Exception e) {
+            failTb();
+            //Toast.makeText(v.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void SocialHistoryParsing() {
+        try {
+            String xml = Phr;
+            //xml 읽어오기
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            InputStream istream = new ByteArrayInputStream(xml.getBytes("utf-8"));
+            Document doc = builder.parse(istream);
+
+            //xml element 읽어오기
+            Element element = doc.getDocumentElement();
+            //노드list 선언
+            NodeList AdverseReactions = element.getElementsByTagName("SocialHistory");
+
+            //항목이 0개가 아니면 title 부르기
+            if (AdverseReactions.getLength() != 0) {
+                setTitle("SocialHistory");
+                setSubtitle2();
+            }
+
+            doc.getDocumentElement().normalize();
+            NodeList nodeList = doc.getElementsByTagName("SocialHistory");//여기 변경
+            int count = nodeList.getLength();
+            for (int i = 0; i < count; i++) {
+                Node node = nodeList.item(i);
+                String date = node.getChildNodes().item(1).getFirstChild().getNodeValue();//여기변경
+                String value = node.getChildNodes().item(3).getFirstChild().getNodeValue();
+                phr.setSocialHistory_d(date);
+                phr.setSocialHistory_v(value);
+                setXmlParsing2(phr.getSocialHistory_d(), phr.getSocialHistory_v());
 
             }
         } catch (Exception e) {
@@ -319,20 +403,333 @@ public class FragmentPHR extends Fragment {
         }
     }
 
-    public void setTb1Title() {
-        TableRow tr_ti = new TableRow(getActivity());
+    public void PM_HeightParsing() {
+        try {
+            String xml = Phr;
+            //xml 읽어오기
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            InputStream istream = new ByteArrayInputStream(xml.getBytes("utf-8"));
+            Document doc = builder.parse(istream);
 
+            //xml element 읽어오기
+            Element element = doc.getDocumentElement();
+            //노드list 선언
+            NodeList AdverseReactions = element.getElementsByTagName("Height");
+
+            //항목이 0개가 아니면 title 부르기
+            if (AdverseReactions.getLength() != 0) {
+                setTitle("Height");
+                setSubtitle2();
+            }
+
+            doc.getDocumentElement().normalize();
+            NodeList nodeList = doc.getElementsByTagName("Height");//여기 변경
+            int count = nodeList.getLength();
+            for (int i = 0; i < count; i++) {
+                Node node = nodeList.item(i);
+                String date = node.getChildNodes().item(1).getFirstChild().getNodeValue();//여기변경
+                String value = node.getChildNodes().item(3).getFirstChild().getNodeValue();
+                phr.setPM_Height_d(date);
+                phr.setPM_Height_v(value);
+                setXmlParsing2(phr.getPM_Height_d(), phr.getPM_Height_v());
+
+            }
+
+
+        } catch (Exception e) {
+            failTb();
+            //Toast.makeText(v.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void PM_WeightParsing() {
+        try {
+            String xml = Phr;
+            //xml 읽어오기
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            InputStream istream = new ByteArrayInputStream(xml.getBytes("utf-8"));
+            Document doc = builder.parse(istream);
+
+            //xml element 읽어오기
+            Element element = doc.getDocumentElement();
+            //노드list 선언
+            NodeList AdverseReactions = element.getElementsByTagName("Weight");
+
+            //항목이 0개가 아니면 title 부르기
+            if (AdverseReactions.getLength() != 0) {
+                setTitle("Weight");
+                setSubtitle2();
+            }
+
+            doc.getDocumentElement().normalize();
+            NodeList nodeList = doc.getElementsByTagName("Weight");//여기 변경
+            int count = nodeList.getLength();
+            for (int i = 0; i < count; i++) {
+                Node node = nodeList.item(i);
+                String date = node.getChildNodes().item(1).getFirstChild().getNodeValue();//여기변경
+                String value = node.getChildNodes().item(3).getFirstChild().getNodeValue();
+                phr.setPM_Weight_d(date);
+                phr.setPM_Weight_v(value);
+                setXmlParsing2(phr.getPM_Weight_d(), phr.getPM_Weight_v());
+
+            }
+
+
+        } catch (Exception e) {
+            failTb();
+            //Toast.makeText(v.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void PM_BloodPressureParsing() {
+        try {
+            String xml = Phr;
+            //xml 읽어오기
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            InputStream istream = new ByteArrayInputStream(xml.getBytes("utf-8"));
+            Document doc = builder.parse(istream);
+
+            //xml element 읽어오기
+            Element element = doc.getDocumentElement();
+            //노드list 선언
+            NodeList AdverseReactions = element.getElementsByTagName("BloodPressure");
+
+            //항목이 0개가 아니면 title 부르기
+            if (AdverseReactions.getLength() != 0) {
+                setTitle("BloodPressure");
+                setSubtitle2();
+            }
+
+            doc.getDocumentElement().normalize();
+            NodeList nodeList = doc.getElementsByTagName("BloodPressure");//여기 변경
+            int count = nodeList.getLength();
+            for (int i = 0; i < count; i++) {
+                Node node = nodeList.item(i);
+                String date = node.getChildNodes().item(1).getFirstChild().getNodeValue();//여기변경
+                String value = node.getChildNodes().item(3).getFirstChild().getNodeValue();
+                phr.setPM_BloodPressure_d(date);
+                phr.setPM_BloodPressure_v(value);
+                setXmlParsing2(phr.getPM_BloodPressure_d(), phr.getPM_BloodPressure_v());
+
+            }
+
+
+        } catch (Exception e) {
+            failTb();
+            //Toast.makeText(v.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void PM_PulseParsing() {
+        try {
+            String xml = Phr;
+            //xml 읽어오기
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            InputStream istream = new ByteArrayInputStream(xml.getBytes("utf-8"));
+            Document doc = builder.parse(istream);
+
+            //xml element 읽어오기
+            Element element = doc.getDocumentElement();
+            //노드list 선언
+            NodeList AdverseReactions = element.getElementsByTagName("Pulse");
+
+            //항목이 0개가 아니면 title 부르기
+            if (AdverseReactions.getLength() != 0) {
+                setTitle("Pulse");
+                setSubtitle2();
+            }
+
+            doc.getDocumentElement().normalize();
+            NodeList nodeList = doc.getElementsByTagName("Pulse");//여기 변경
+            int count = nodeList.getLength();
+            for (int i = 0; i < count; i++) {
+                Node node = nodeList.item(i);
+                String date = node.getChildNodes().item(1).getFirstChild().getNodeValue();//여기변경
+                String value = node.getChildNodes().item(3).getFirstChild().getNodeValue();
+                phr.setPM_Pulse_d(date);
+                phr.setPM_Pulse_v(value);
+                setXmlParsing2(phr.getPM_Pulse_d(), phr.getPM_Pulse_v());
+
+            }
+
+
+        } catch (Exception e) {
+            failTb();
+            //Toast.makeText(v.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void PM_BloodTypeParsing() {
+        try {
+            String xml = Phr;
+            //xml 읽어오기
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            InputStream istream = new ByteArrayInputStream(xml.getBytes("utf-8"));
+            Document doc = builder.parse(istream);
+
+            //xml element 읽어오기
+            Element element = doc.getDocumentElement();
+            //노드list 선언
+            NodeList AdverseReactions = element.getElementsByTagName("BloodType");
+
+            //항목이 0개가 아니면 title 부르기
+            if (AdverseReactions.getLength() != 0) {
+                setTitle("BloodType");
+                setSubtitle2();
+            }
+
+            doc.getDocumentElement().normalize();
+            NodeList nodeList = doc.getElementsByTagName("BloodType");//여기 변경
+            int count = nodeList.getLength();
+            for (int i = 0; i < count; i++) {
+                Node node = nodeList.item(i);
+                String date = node.getChildNodes().item(1).getFirstChild().getNodeValue();//여기변경
+                String value = node.getChildNodes().item(3).getFirstChild().getNodeValue();
+                phr.setPM_BloodType_d(date);
+                phr.setPM_BloodType_v(value);
+                setXmlParsing2(phr.getPM_BloodType_d(), phr.getPM_BloodType_v());
+
+            }
+
+
+        } catch (Exception e) {
+            failTb();
+            //Toast.makeText(v.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void MedicationParsing() {
+        try {
+            String xml = Phr;
+            //xml 읽어오기
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            InputStream istream = new ByteArrayInputStream(xml.getBytes("utf-8"));
+            Document doc = builder.parse(istream);
+
+            //xml element 읽어오기
+            Element element = doc.getDocumentElement();
+            //노드list 선언
+            NodeList AdverseReactions = element.getElementsByTagName("Medication");
+
+            //항목이 0개가 아니면 title 부르기
+            if (AdverseReactions.getLength() != 0) {
+                setTitle2("Medication");
+                setSubtitle3();
+            }
+
+            doc.getDocumentElement().normalize();
+            NodeList nodeList = doc.getElementsByTagName("Medication");//여기 변경
+            int count = nodeList.getLength();
+            for (int i = 0; i < count; i++) {
+                Node node = nodeList.item(i);
+                String date = node.getChildNodes().item(1).getFirstChild().getNodeValue();//여기변경
+                String code = node.getChildNodes().item(3).getFirstChild().getNodeValue();
+                String value = node.getChildNodes().item(5).getFirstChild().getNodeValue();
+                phr.setMedication_d(date);
+                phr.setMedication_c(code);
+                phr.setPastHistory_v(value);
+                setXmlParsing3(phr.getMedication_d(), phr.getMedication_c(), phr.getPastHistory_v());
+
+            }
+
+
+        } catch (Exception e) {
+            failTb();
+            //Toast.makeText(v.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void TeleMedicineParsing() {
+        try {
+            String xml = Phr;
+            //xml 읽어오기
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            InputStream istream = new ByteArrayInputStream(xml.getBytes("utf-8"));
+            Document doc = builder.parse(istream);
+
+            //xml element 읽어오기
+            Element element = doc.getDocumentElement();
+            //노드list 선언
+            NodeList AdverseReactions = element.getElementsByTagName("TeleMedicine");
+
+            //항목이 0개가 아니면 title 부르기
+            if (AdverseReactions.getLength() != 0) {
+                setTitleLast("TeleMedicine");
+                setSubtitleLast();
+            }
+
+            doc.getDocumentElement().normalize();
+            NodeList nodeList = doc.getElementsByTagName("TeleMedicine");//여기 변경
+            int count = nodeList.getLength();
+            for (int i = 0; i < count; i++) {
+                Node node = nodeList.item(i);
+                String date = node.getChildNodes().item(1).getFirstChild().getNodeValue();//여기변경
+                String value = node.getChildNodes().item(3).getFirstChild().getNodeValue();
+                phr.setTeleMedicine_d(date);
+                phr.setTeleMedicine_v(value);
+                setXmlParsingLast(phr.getTeleMedicine_d(), phr.getTeleMedicine_v());
+
+            }
+
+
+        } catch (Exception e) {
+            failTb();
+            //Toast.makeText(v.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void failTb() {
+
+        TableRow tr_ti = new TableRow(getActivity());
         tr_ti.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         TextView tb1_t = new TextView(getActivity());
-        tr_ti.setBackgroundColor(Color.argb(255,122,178,212));
-        tb1_t.setPadding(40,10,0,10);
-        tb1_t.setText("Allergy");
-        tb1_t.setTextColor(Color.WHITE);
+        tb1_t.setText("code xml parsing fail");
+    }
 
+    public void setTitle(String title) {
+        TableRow tr_ti = new TableRow(getActivity());
+        tr_ti.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        TextView tb1_t = new TextView(getActivity());
+        tr_ti.setBackgroundColor(Color.argb(255, 122, 178, 212));
+        tb1_t.setPadding(40, 10, 0, 10);
+        tb1_t.setText(title);
+        tb1_t.setTextColor(Color.WHITE);
         tb1_t.setTextSize(22);
         tr_ti.addView(tb1_t);
         tb1.addView(tr_ti, new TableLayout.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-
+    }
+    public void setTitle2(String title) {
+        TableRow tr_ti = new TableRow(getActivity());
+        tr_ti.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        TextView tb1_t = new TextView(getActivity());
+        tr_ti.setBackgroundColor(Color.argb(255, 122, 178, 212));
+        tb1_t.setPadding(40, 10, 0, 10);
+        tb1_t.setText(title);
+        tb1_t.setTextColor(Color.WHITE);
+        tb1_t.setTextSize(22);
+        tr_ti.addView(tb1_t);
+        tb2.addView(tr_ti, new TableLayout.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+    }
+    public void setTitleLast(String title) {
+        TableRow tr_ti = new TableRow(getActivity());
+        tr_ti.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        TextView tb1_t = new TextView(getActivity());
+        tr_ti.setBackgroundColor(Color.argb(255, 122, 178, 212));
+        tb1_t.setPadding(40, 10, 0, 10);
+        tb1_t.setText(title);
+        tb1_t.setTextColor(Color.WHITE);
+        tb1_t.setTextSize(22);
+        tr_ti.addView(tb1_t);
+        tb3.addView(tr_ti, new TableLayout.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+    }
+    public void setSubtitle2() {
         TableRow tr_head = new TableRow(getActivity());
         tr_head.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         TextView date = new TextView(getActivity());
@@ -349,19 +746,87 @@ public class FragmentPHR extends Fragment {
         tr_head.addView(value);
         tb1.addView(tr_head, new TableLayout.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
-
-    public void setTb1() {
+    public void setSubtitleLast() {
+        TableRow tr_head = new TableRow(getActivity());
+        tr_head.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        TextView date = new TextView(getActivity());
+        date.setText("Date");
+        date.setTextColor(Color.BLACK);
+        date.setTextSize(18);
+        date.setPadding(40, 10, 0, 10);
+        tr_head.addView(date);
+        TextView value = new TextView(getActivity());
+        value.setText("Value");
+        value.setTextColor(Color.BLACK);
+        value.setPadding(40, 10, 0, 10);
+        value.setTextSize(18);
+        tr_head.addView(value);
+        tb3.addView(tr_head, new TableLayout.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+    }
+    public void setXmlParsing2(String date, String value) {
         TextView dateView = new TextView(getActivity());
-        dateView.setText(phr.getAllergy_d());
-        dateView.setPadding(40,0,0,0);
+        dateView.setText(date);
+        dateView.setPadding(40, 0, 0, 0);
         TextView valueView = new TextView(getActivity());
-        valueView.setText(phr.getAllergy_v());
+        valueView.setText(value);
         valueView.setPadding(40, 0, 0, 0);
         TableRow tr = new TableRow(getActivity());
-        tr.setPadding(0,10,0,10);
+        tr.setPadding(0, 10, 0, 10);
         tr.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         tr.addView(dateView);
         tr.addView(valueView);
         tb1.addView(tr, new TableLayout.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+    }
+
+    public void setSubtitle3() {
+        TableRow tr_head = new TableRow(getActivity());
+        tr_head.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        TextView date = new TextView(getActivity());
+        date.setText("Date");
+        date.setTextColor(Color.BLACK);
+        date.setTextSize(18);
+        tr_head.addView(date);
+        TextView code = new TextView(getActivity());
+        code.setText("Code");
+        code.setTextColor(Color.BLACK);
+        code.setTextSize(18);
+        tr_head.addView(code);
+        TextView value = new TextView(getActivity());
+        value.setText("Value");
+        value.setTextColor(Color.BLACK);
+        value.setTextSize(18);
+        tr_head.addView(value);
+        tb2.addView(tr_head, new TableLayout.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+    }
+
+    public void setXmlParsing3(String date, String code, String value) {
+        TextView dateView = new TextView(getActivity());
+        dateView.setText(date);
+        TextView codeView = new TextView(getActivity());
+        codeView.setText(code);
+        TextView valueView = new TextView(getActivity());
+        valueView.setText(value);
+        TableRow tr = new TableRow(getActivity());
+        tr.setPadding(0, 10, 0, 10);
+        tr.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        tr.addView(dateView);
+        tr.addView(codeView);
+        tr.addView(valueView);
+        tb2.addView(tr, new TableLayout.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+    }
+    public void setXmlParsingLast(String date, String value) {
+        TextView dateView = new TextView(getActivity());
+        dateView.setText(date);
+        dateView.setPadding(40, 0, 0, 0);
+        TextView valueView = new TextView(getActivity());
+        valueView.setText(value);
+        valueView.setPadding(40, 0, 0, 0);
+        TableRow tr = new TableRow(getActivity());
+        tr.setPadding(0, 10, 0, 10);
+        tr.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        tr.addView(dateView);
+        tr.addView(valueView);
+        tb3.addView(tr, new TableLayout.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 }

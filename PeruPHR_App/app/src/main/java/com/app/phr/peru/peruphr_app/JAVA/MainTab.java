@@ -13,8 +13,10 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 
@@ -39,14 +41,15 @@ public class MainTab extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main_tab);
+        preferences = getSharedPreferences(PreferencePutter.PREF_FILE_NAME, Activity.MODE_PRIVATE);
 
+        setContentView(R.layout.main_tab);
         //action bar 대신 toolbar를 사용
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         //toolbar 에서 action bar의 support를 받아옴
         setSupportActionBar(toolbar);
         //타이틀 변경
-        getSupportActionBar().setTitle("Peru-PHR");
+        getSupportActionBar().setTitle(preferences.getString(PreferencePutter.PATIENT_NAME, "Peru PHR"));
         //액션바 컬러 변경
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xB9CDE5));
         //새로고침 아이콘 표시
@@ -59,10 +62,30 @@ public class MainTab extends AppCompatActivity {
 
         //tab레이아웃을 사용함. main_tab.xml과 연결되어 있음
         tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+              if(tab.getPosition() != 2) {
+                  Log.d("err","hide keyboard");
+             //     hideKeyboard();
+              }
+            }
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
         tabLayout.setupWithViewPager(viewPager);
         setupTabIcons();
     }
-
+    public void hideKeyboard()
+    {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+    }
     //tab 아이콘 바꿀 수 있음
     private void setupTabIcons() {
         tabLayout.getTabAt(0).setIcon(tabIcons[0]);
@@ -84,7 +107,6 @@ public class MainTab extends AppCompatActivity {
 
         //home 버튼 눌렀을때
         if (id == android.R.id.home) {
-            preferences = getSharedPreferences(PreferencePutter.PREF_FILE_NAME, Activity.MODE_PRIVATE);
             edit = preferences.edit();
             edit.putBoolean(PreferencePutter.LOG_IN, false);
             edit.commit();

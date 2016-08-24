@@ -345,8 +345,10 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
                 startActivity(myAct1);
                 //start next Activity
             } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+           /*     mPasswordView.setError(getString(R.string.error_incorrect_password));
+                mPasswordView.requestFocus();*/
+                Toast.makeText(getApplicationContext(),"일치하지않는 계정입니다.", Toast.LENGTH_SHORT).show();
+
             }
         }
 
