@@ -31,7 +31,7 @@
                 android:layout_gravity="center"
                 android:editable="false"
                 android:textSize="50dp"
-                android:textColor="@drawable/login_btn"
+                android:textColor="#045953"
                 android:textColorHighlight="#7dbf7d"
                 android:textIsSelectable="false" />
 
@@ -90,7 +90,8 @@
                 android:background="@drawable/login_btn"
                 android:text="@string/action_sign_in"
                 android:textSize="20dp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:textColor="#ffffff"/>
 
         </LinearLayout>
     </LinearLayout>

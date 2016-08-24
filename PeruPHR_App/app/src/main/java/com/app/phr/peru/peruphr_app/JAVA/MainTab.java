@@ -33,9 +33,9 @@ public class MainTab extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private int[] tabIcons = {
-            R.drawable.icon1,
-            R.drawable.icon1,
-            R.drawable.icon1
+            R.mipmap.icon_phr,
+            R.mipmap.icon_edu,
+            R.mipmap.icon_myinfo
     };
 
     @Override
@@ -51,7 +51,7 @@ public class MainTab extends AppCompatActivity {
         //타이틀 변경
         getSupportActionBar().setTitle(preferences.getString(PreferencePutter.PATIENT_NAME, "Peru PHR"));
         //액션바 컬러 변경
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xB9CDE5));
+        //getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0x7A7A7A));
         //새로고침 아이콘 표시
         //getSupportActionBar().setDisplayShowCustomEnabled(true);
         // 홈 아이콘 표시
@@ -129,7 +129,7 @@ public class MainTab extends AppCompatActivity {
         }
         adapter.addFrag(new FragmentPHR(), "PHR");
         //adapter.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        adapter.addFrag(new FragmentEducationInfo(), "Education Info");
+        adapter.addFrag(new FragmentEducationInfo(), "Edu-Info");
         adapter.addFrag(new FragmentMyInfo(), "My Info");
         viewPager.setAdapter(adapter);
     }

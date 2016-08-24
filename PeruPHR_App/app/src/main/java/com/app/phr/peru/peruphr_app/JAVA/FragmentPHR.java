@@ -697,11 +697,11 @@ public class FragmentPHR extends Fragment {
         TableRow tr_ti = new TableRow(getActivity());
         tr_ti.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         TextView tb1_t = new TextView(getActivity());
-        tr_ti.setBackgroundColor(Color.argb(255, 122, 178, 212));
+        tr_ti.setBackgroundColor(Color.rgb(194, 194, 194));
         tb1_t.setPadding(40, 10, 0, 10);
         tb1_t.setText(title);
-        tb1_t.setTextColor(Color.WHITE);
-        tb1_t.setTextSize(22);
+        tb1_t.setTextColor(Color.rgb(2, 46, 43));
+        tb1_t.setTextSize(23);
         tr_ti.addView(tb1_t);
         tb1.addView(tr_ti, new TableLayout.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
@@ -709,11 +709,11 @@ public class FragmentPHR extends Fragment {
         TableRow tr_ti = new TableRow(getActivity());
         tr_ti.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         TextView tb1_t = new TextView(getActivity());
-        tr_ti.setBackgroundColor(Color.argb(255, 122, 178, 212));
+        tr_ti.setBackgroundColor(Color.rgb(194, 194, 194));
         tb1_t.setPadding(40, 10, 0, 10);
         tb1_t.setText(title);
-        tb1_t.setTextColor(Color.WHITE);
-        tb1_t.setTextSize(22);
+        tb1_t.setTextColor(Color.rgb(2, 46, 43));
+        tb1_t.setTextSize(23);
         tr_ti.addView(tb1_t);
         tb2.addView(tr_ti, new TableLayout.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
@@ -721,11 +721,11 @@ public class FragmentPHR extends Fragment {
         TableRow tr_ti = new TableRow(getActivity());
         tr_ti.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         TextView tb1_t = new TextView(getActivity());
-        tr_ti.setBackgroundColor(Color.argb(255, 122, 178, 212));
+        tr_ti.setBackgroundColor(Color.rgb(194, 194, 194));
         tb1_t.setPadding(40, 10, 0, 10);
         tb1_t.setText(title);
-        tb1_t.setTextColor(Color.WHITE);
-        tb1_t.setTextSize(22);
+        tb1_t.setTextColor(Color.rgb(2, 46, 43));
+        tb1_t.setTextSize(23);
         tr_ti.addView(tb1_t);
         tb3.addView(tr_ti, new TableLayout.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
@@ -735,14 +735,14 @@ public class FragmentPHR extends Fragment {
         TextView date = new TextView(getActivity());
         date.setText("Date");
         date.setTextColor(Color.BLACK);
-        date.setTextSize(18);
+        date.setTextSize(19);
         date.setPadding(40, 10, 0, 10);
         tr_head.addView(date);
         TextView value = new TextView(getActivity());
         value.setText("Value");
         value.setTextColor(Color.BLACK);
-        value.setPadding(40, 10, 0, 10);
-        value.setTextSize(18);
+        value.setPadding(0, 10, 0, 10);
+        value.setTextSize(19);
         tr_head.addView(value);
         tb1.addView(tr_head, new TableLayout.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
@@ -751,14 +751,15 @@ public class FragmentPHR extends Fragment {
         tr_head.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         TextView date = new TextView(getActivity());
         date.setText("Date");
+        date.setTextSize(19);
         date.setTextColor(Color.BLACK);
-        date.setTextSize(18);
+        date.setTextSize(19);
         date.setPadding(40, 10, 0, 10);
         tr_head.addView(date);
         TextView value = new TextView(getActivity());
         value.setText("Value");
         value.setTextColor(Color.BLACK);
-        value.setPadding(40, 10, 0, 10);
+        value.setPadding(0, 10, 0, 10);
         value.setTextSize(18);
         tr_head.addView(value);
         tb3.addView(tr_head, new TableLayout.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -766,10 +767,12 @@ public class FragmentPHR extends Fragment {
     public void setXmlParsing2(String date, String value) {
         TextView dateView = new TextView(getActivity());
         dateView.setText(date);
+        dateView.setTextSize(16);
         dateView.setPadding(40, 0, 0, 0);
         TextView valueView = new TextView(getActivity());
         valueView.setText(value);
-        valueView.setPadding(40, 0, 0, 0);
+        valueView.setTextSize(16);
+        valueView.setPadding(0, 0, 0, 0);
         TableRow tr = new TableRow(getActivity());
         tr.setPadding(0, 10, 0, 10);
         tr.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -784,17 +787,20 @@ public class FragmentPHR extends Fragment {
         TextView date = new TextView(getActivity());
         date.setText("Date");
         date.setTextColor(Color.BLACK);
-        date.setTextSize(18);
+        date.setTextSize(19);
+        date.setPadding(40, 0, 0, 0);
         tr_head.addView(date);
         TextView code = new TextView(getActivity());
         code.setText("Code");
         code.setTextColor(Color.BLACK);
-        code.setTextSize(18);
+        code.setTextSize(19);
+        code.setPadding(0, 0, 0, 0);
         tr_head.addView(code);
         TextView value = new TextView(getActivity());
         value.setText("Value");
         value.setTextColor(Color.BLACK);
-        value.setTextSize(18);
+        value.setTextSize(19);
+        value.setPadding(40, 0, 0, 0);
         tr_head.addView(value);
         tb2.addView(tr_head, new TableLayout.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
@@ -802,10 +808,16 @@ public class FragmentPHR extends Fragment {
 
     public void setXmlParsing3(String date, String code, String value) {
         TextView dateView = new TextView(getActivity());
+        dateView.setPadding(40, 0, 0, 0);
+        dateView.setTextSize(16);
         dateView.setText(date);
         TextView codeView = new TextView(getActivity());
+        codeView.setPadding(0, 0, 0, 0);
+        codeView.setTextSize(16);
         codeView.setText(code);
         TextView valueView = new TextView(getActivity());
+        valueView.setPadding(40, 0, 0, 0);
+        valueView.setTextSize(16);
         valueView.setText(value);
         TableRow tr = new TableRow(getActivity());
         tr.setPadding(0, 10, 0, 10);
@@ -818,10 +830,12 @@ public class FragmentPHR extends Fragment {
     public void setXmlParsingLast(String date, String value) {
         TextView dateView = new TextView(getActivity());
         dateView.setText(date);
+        dateView.setTextSize(16);
         dateView.setPadding(40, 0, 0, 0);
         TextView valueView = new TextView(getActivity());
         valueView.setText(value);
-        valueView.setPadding(40, 0, 0, 0);
+        valueView.setTextSize(16);
+        valueView.setPadding(0, 0, 0, 0);
         TableRow tr = new TableRow(getActivity());
         tr.setPadding(0, 10, 0, 10);
         tr.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
