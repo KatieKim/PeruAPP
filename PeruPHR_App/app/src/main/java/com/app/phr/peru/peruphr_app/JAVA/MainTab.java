@@ -20,6 +20,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 
+import com.app.phr.peru.peruphr_app.BackPressCloseHandler;
 import com.app.phr.peru.peruphr_app.R;
 
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ import java.util.List;
 
 public class MainTab extends AppCompatActivity {
 
+    private BackPressCloseHandler backPressCloseHandler;
     private SharedPreferences preferences;
     private SharedPreferences.Editor edit;
     private Toolbar toolbar;
@@ -44,6 +46,7 @@ public class MainTab extends AppCompatActivity {
         preferences = getSharedPreferences(PreferencePutter.PREF_FILE_NAME, Activity.MODE_PRIVATE);
 
         setContentView(R.layout.main_tab);
+        backPressCloseHandler = new BackPressCloseHandler(this);
         //action bar 대신 toolbar를 사용
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         //toolbar 에서 action bar의 support를 받아옴
@@ -81,11 +84,19 @@ public class MainTab extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
         setupTabIcons();
     }
+
     public void hideKeyboard()
     {
         InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
     }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        backPressCloseHandler.onBackPressed();
+    }
+
     //tab 아이콘 바꿀 수 있음
     private void setupTabIcons() {
         tabLayout.getTabAt(0).setIcon(tabIcons[0]);
