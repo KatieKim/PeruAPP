@@ -178,7 +178,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
 
             // Check for a valid password, if the user entered one.
             if (password.equals("")) {
-                mPasswordView.setError("this file is required");
+              //  mPasswordView.setError("this file is required");
                 Log.d("check", "pw");
                 focusView = mPasswordView;
                 cancel = true;
@@ -186,7 +186,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
 
             // Check for a valid ID.
             if (id.equals("")) {
-                mIDView.setError(getString(R.string.error_field_required));
+               // mIDView.setError(getString(R.string.error_field_required));
                 focusView = mIDView;
                 cancel = true;
             }
@@ -226,13 +226,15 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
                 String savedID = preferences.getString(PreferencePutter.PREF_ID, "");
                 String savedPW = preferences.getString(PreferencePutter.PREF_PW, "");
                 if (!savedID.equals(id)) {
-                    Toast.makeText(getApplicationContext(), "기존의 사용자 id와 일치하지 않습니다.\n새로운 id로 로그인을 원하시면 network연결을 확인해주세요", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Id del desajuste\n\n" +
+                            "que comprobar la red", Toast.LENGTH_SHORT).show();
                     hideKeyboard();
                 } else {
                     if (savedID.equals(id) && savedPW.equals(password)) {
                         //start to next page
                         Intent myAct1 = new Intent(Login.this, MainTab.class);
                         startActivity(myAct1);
+                        finish();
                     } else {
                         Toast.makeText(getApplicationContext(),
                                 "contraseña diferente.", Toast.LENGTH_SHORT).show();
@@ -335,7 +337,8 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
 
             if (result.equals("connection error")) {
 
-                Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),
+                        "error de conexión", Toast.LENGTH_SHORT).show();
             } else if (parser.resForLogin(result)) {
                 Log.d("check", result);
                 String savedID = preferences.getString(PreferencePutter.PREF_ID, "null");
@@ -356,6 +359,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
 
                 Intent myAct1 = new Intent(Login.this, MainTab.class);
                 startActivity(myAct1);
+                finish();
                 //start next Activity
             } else {
            /*     mPasswordView.setError(getString(R.string.error_incorrect_password));

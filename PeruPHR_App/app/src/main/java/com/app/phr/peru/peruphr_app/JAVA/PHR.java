@@ -16,8 +16,10 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 /**
- * Created by omop on 2016-08-17.
- */public class PHR {
+ * Created by hansol on 2016-08-17.
+ */
+
+public class PHR {
     //Todo 임신주기 일단 주석
     //private String PregnancyDueDate_d, PregnancyDueDate_v;
     private String Allergy_d, Allergy_v;

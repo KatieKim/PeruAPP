@@ -7,7 +7,7 @@ import android.net.NetworkInfo;
 /**
  * Created by chiyo on 2016-08-09.
  */
-public class NetworkUtil {
+public class NetworkUtil {    //network 상태 유무 확인 CLASS
     public static int TYPE_WIFI = 1;
     public static int TYPE_MOBILE = 2;
     public static int TYPE_NOT_CONNECTED = 0;

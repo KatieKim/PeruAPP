@@ -1,5 +1,10 @@
 package com.app.phr.peru.peruphr_app.JAVA;
 
+/**
+ * Created by hansol on 2016-08-10.
+ * fragment와 연결이 되어있는 main tab
+ */
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -53,8 +58,6 @@ public class MainTab extends AppCompatActivity {
         setSupportActionBar(toolbar);
         //타이틀 변경
         getSupportActionBar().setTitle(preferences.getString(PreferencePutter.PATIENT_NAME, "Peru PHR"));
-        //액션바 컬러 변경
-        //getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0x7A7A7A));
         //새로고침 아이콘 표시
         //getSupportActionBar().setDisplayShowCustomEnabled(true);
         // 홈 아이콘 표시
@@ -106,16 +109,6 @@ public class MainTab extends AppCompatActivity {
         tabLayout.getTabAt(2).setIcon(tabIcons[2]);
     }
 
-    //메뉴 버튼 추가, 아이콘 연결 되어 있음
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.menu, menu);
-//        return true;
-//    }
-
-    //메뉴 이벤트 처리
-
-
     //tab에서 보여줄 탭 fragment 이름
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
@@ -142,7 +135,7 @@ public class MainTab extends AppCompatActivity {
             return mFragmentList.get(position);
         }
 
-        //fragment 초기화 안될 시에 추가 할 것
+        //fragment 탭 이동마다 초기화 안될 시에 추가 할 것
 //        @Override
 //        public int getItemPosition(Object item) {
 //            return POSITION_NONE;

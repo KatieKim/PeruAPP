@@ -13,16 +13,13 @@ import javax.xml.parsers.ParserConfigurationException;
 /**
  * Created by chiyo on 2016-08-05.
  */
-public class XmlWriter {
+public class XmlWriter {   //각 요청별 XML data를 만들어주는 class
     private String id;
     private String pw;
     private String newPw;
     private String key;
     private Document doc;
     private String type;
-    public void getKeyCd(String key){
-        this.key = key;
-    }
     public XmlWriter() {
         this.id = "";
         this.pw = "";

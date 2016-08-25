@@ -28,7 +28,7 @@ import javax.xml.transform.stream.StreamResult;
 /**
  * Created by chiyo on 2016-08-04.
  */
-public class HTTPClient {
+public class HTTPClient {   //HTTP connection cliecnt
     private Document mDoc;
     private String request;
     final static String LINK ="http://ucare.gilhospital.com/Peru/gateway.aspx";

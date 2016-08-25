@@ -64,7 +64,7 @@
                     android:id="@+id/password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/prompt_password"
+                    android:hint="contraseña"
                     android:imeActionId="@+id/login"
                     android:imeActionLabel="@string/action_sign_in_short"
                     android:imeOptions="actionDone"
@@ -88,7 +88,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_gravity="center"
                 android:background="@drawable/login_btn"
-                android:text="@string/action_sign_in"
+                android:text="registrarse"
                 android:textSize="20dp"
                 android:textStyle="bold"
                 android:textColor="#ffffff"/>

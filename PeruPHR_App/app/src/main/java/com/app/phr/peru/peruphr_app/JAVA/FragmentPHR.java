@@ -1,9 +1,16 @@
 package com.app.phr.peru.peruphr_app.JAVA;
 
+/**
+ * Created by hansol on 2016-08-10.
+ * phr xml parsing
+ * PHR.java 를 통하여 메소드에 항목별로 변수 지정 됨
+ */
+
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -70,6 +77,78 @@ public class FragmentPHR extends Fragment {
     }
 
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        preferences = getActivity().getSharedPreferences(PreferencePutter.PREF_FILE_NAME, Activity.MODE_PRIVATE);
+
+        if (NetworkUtil.getConnectivityStatusBoolean((getActivity()))) {   //PHR fragment가 create 되었을때 network 상태 유무를 판단해서 network가 연결되어있으면 server에 phr 요청 후 받은 response로 layour 구성
+            //network가 연결 안될시에는 SharedPreference에 저장했던 response xml data 를 parsing해서 띄우기. (network에게 response를 받아올때마다 sharedPreference에 저장)
+            requestPHR();
+
+            while (!flag) {
+            }
+            flag = false;
+// 데이터 receive 성공 유무 판단 !!
+            Log.d("frag", "get phr");
+        } else {
+            setLayoutWithout_Net();
+        }
+    }
+    private void setLayoutWithout_Net(){
+        Log.d("frag", "networkless");
+        Phr = preferences.getString(PreferencePutter.PHR, "null");
+        if (Phr.equals("null")) {
+            //show need to networ for receiving data
+            Log.d("frag", "null phr");
+            getPHR = false;
+        } else if (Phr.equals("non_record")) {
+            getPHR = false;
+        } else {
+            //parsing result & show
+            parse_putPHR(Phr);  //insert phr into layout
+            Log.d("non net", Phr);
+            getPHR = true;
+        }
+    }
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+       // hideKeyboard();
+
+        View rootView;
+        if(getPHR) {
+            rootView = inflater.inflate(R.layout.fragment_phr, container, false);
+            phr = new PHR();
+            tb1 = (TableLayout) rootView.findViewById(R.id.table1);
+            tb1.setStretchAllColumns(true);
+            tb2 = (TableLayout) rootView.findViewById(R.id.table2);
+            tb2.setStretchAllColumns(true);
+            tb3 = (TableLayout) rootView.findViewById(R.id.table3);
+            tb3.setStretchAllColumns(true);
+
+            //항목별로 매소드 구성
+            AllergyParsing();
+            AdverseReactionParsing();
+            PastHistoryParsing();
+            FamilyHistoryParsing();
+            SocialHistoryParsing();
+            PM_HeightParsing();
+            PM_WeightParsing();
+            PM_BloodPressureParsing();
+            PM_PulseParsing();
+            PM_BloodTypeParsing();
+            MedicationParsing();
+            TeleMedicineParsing();
+
+        } else {
+            rootView = inflater.inflate(R.layout.non_phr, container, false);
+        }
+        return rootView;
+
+    }
+
     public class requestPHRTask extends AsyncTask<Void, Void, String> {  //thread to connect to server
         private HTTPClient client;
         private XmlWriter writer;
@@ -130,82 +209,8 @@ public class FragmentPHR extends Fragment {
         }
 
     }
-    public void hideKeyboard()
-    {
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-        Log.d("err", "phr hide keyboard");
 
-    }
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        preferences = getActivity().getSharedPreferences(PreferencePutter.PREF_FILE_NAME, Activity.MODE_PRIVATE);
-
-        if (NetworkUtil.getConnectivityStatusBoolean((getActivity()))) {
-            requestPHR();
-
-            while (!flag) {
-            }
-            flag = false;
-// 데이터 receive 성공 유무 판단 !!
-            Log.d("frag", "get phr");
-        } else {
-            setLayoutWithout_Net();
-        }
-    }
-    private void setLayoutWithout_Net(){
-        Log.d("frag", "networkless");
-        Phr = preferences.getString(PreferencePutter.PHR, "null");
-        if (Phr.equals("null")) {
-            //show need to networ for receiving data
-            Log.d("frag", "null phr");
-            getPHR = false;
-        } else if (Phr.equals("non_record")) {
-            getPHR = false;
-        } else {
-            //parsing result & show
-            parse_putPHR(Phr);  //insert phr into layout
-            Log.d("non net", Phr);
-            getPHR = true;
-        }
-    }
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-       // hideKeyboard();
-
-        View rootView;
-        if(getPHR) {
-            rootView = inflater.inflate(R.layout.fragment_phr, container, false);
-            phr = new PHR();
-            tb1 = (TableLayout) rootView.findViewById(R.id.table1);
-            tb1.setStretchAllColumns(true);
-            tb2 = (TableLayout) rootView.findViewById(R.id.table2);
-            tb2.setStretchAllColumns(true);
-            tb3 = (TableLayout) rootView.findViewById(R.id.table3);
-            tb3.setStretchAllColumns(true);
-
-            AllergyParsing();
-            AdverseReactionParsing();
-            PastHistoryParsing();
-            FamilyHistoryParsing();
-            SocialHistoryParsing();
-            PM_HeightParsing();
-            PM_WeightParsing();
-            PM_BloodPressureParsing();
-            PM_PulseParsing();
-            PM_BloodTypeParsing();
-            MedicationParsing();
-            TeleMedicineParsing();
-
-        } else {
-            rootView = inflater.inflate(R.layout.non_phr, container, false);
-        }
-        return rootView;
-
-    }public void AllergyParsing() {
+    public void AllergyParsing() {
         try {
             String xml = Phr;
             //xml 읽어오기
@@ -216,7 +221,7 @@ public class FragmentPHR extends Fragment {
 
             //노드 읽어오기
             Element order = doc.getDocumentElement();
-            //노드 선언
+            //노드 개수 파악
             NodeList allergys = order.getElementsByTagName("Allergy");
 
             //항목이 0개가 아니면 title 부르기
@@ -225,12 +230,13 @@ public class FragmentPHR extends Fragment {
                 setSubtitle2();
             }
 
+            //노드-자식노드를 통하여 값을 파싱 함.
             doc.getDocumentElement().normalize();
             NodeList nodeList = doc.getElementsByTagName("Allergy");//여기 변경
             int count = nodeList.getLength();
             for (int i = 0; i < count; i++) {
                 Node node = nodeList.item(i);
-                String Date = node.getChildNodes().item(1).getFirstChild().getNodeValue();//여기변경
+                String Date = node.getChildNodes().item(1).getFirstChild().getNodeValue();//여기변경 홀수 단위로 생각하기.
                 String Value = node.getChildNodes().item(3).getFirstChild().getNodeValue();
                 phr.setAllergy_d(Date);
                 phr.setAllergy_v(Value);
@@ -662,7 +668,7 @@ public class FragmentPHR extends Fragment {
             //항목이 0개가 아니면 title 부르기
             if (AdverseReactions.getLength() != 0) {
                 setTitleLast("TeleMedicine");
-                setSubtitleLast();
+         //       setSubtitleLast();
             }
 
             doc.getDocumentElement().normalize();
@@ -685,6 +691,7 @@ public class FragmentPHR extends Fragment {
         }
     }
 
+    //xml 파싱 단게에서 오류 났을 때 출력하는 매소드
     public void failTb() {
 
         TableRow tr_ti = new TableRow(getActivity());
@@ -729,6 +736,8 @@ public class FragmentPHR extends Fragment {
         tr_ti.addView(tb1_t);
         tb3.addView(tr_ti, new TableLayout.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
+
+    //항목 2개짜리(date, value only)
     public void setSubtitle2() {
         TableRow tr_head = new TableRow(getActivity());
         tr_head.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -746,6 +755,8 @@ public class FragmentPHR extends Fragment {
         tr_head.addView(value);
         tb1.addView(tr_head, new TableLayout.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
+
+    //항목 2개짜리(date, value only)
     public void setSubtitleLast() {
         TableRow tr_head = new TableRow(getActivity());
         tr_head.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -764,6 +775,8 @@ public class FragmentPHR extends Fragment {
         tr_head.addView(value);
         tb3.addView(tr_head, new TableLayout.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
+
+    //항목 2개짜리(date, value only) 파싱
     public void setXmlParsing2(String date, String value) {
         TextView dateView = new TextView(getActivity());
         dateView.setText(date);
@@ -781,6 +794,7 @@ public class FragmentPHR extends Fragment {
         tb1.addView(tr, new TableLayout.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
+    //항목 3개짜리(date, code, value only)
     public void setSubtitle3() {
         TableRow tr_head = new TableRow(getActivity());
         tr_head.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -806,6 +820,7 @@ public class FragmentPHR extends Fragment {
 
     }
 
+    //항목 3개짜리(date, code, value only) 파싱
     public void setXmlParsing3(String date, String code, String value) {
         TextView dateView = new TextView(getActivity());
         dateView.setPadding(40, 0, 0, 0);
@@ -827,20 +842,30 @@ public class FragmentPHR extends Fragment {
         tr.addView(valueView);
         tb2.addView(tr, new TableLayout.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
+
     public void setXmlParsingLast(String date, String value) {
         TextView dateView = new TextView(getActivity());
         dateView.setText(date);
         dateView.setTextSize(16);
         dateView.setPadding(40, 0, 0, 0);
+        dateView.setTypeface(null, Typeface.BOLD_ITALIC);
+
         TextView valueView = new TextView(getActivity());
         valueView.setText(value);
         valueView.setTextSize(16);
-        valueView.setPadding(0, 0, 0, 0);
+        valueView.setPadding(40, 0, 0, 0);
+        valueView.setMaxLines(20);
         TableRow tr = new TableRow(getActivity());
+        TableRow tr2 = new TableRow(getActivity());
+
         tr.setPadding(0, 10, 0, 10);
         tr.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        tr2.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
         tr.addView(dateView);
-        tr.addView(valueView);
+        tr2.addView(valueView);
         tb3.addView(tr, new TableLayout.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        tb3.addView(tr2, new TableLayout.LayoutParams(ActionBar.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
     }
 }

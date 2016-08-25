@@ -22,24 +22,19 @@ import javax.xml.parsers.ParserConfigurationException;
 /**
  * Created by chiyo on 2016-08-05.
  */
-public class XmlParser {
-    private int responseType; //log in
+public class XmlParser {   //RESPONSE받아오는 String data를 파싱해주는 class  -> 사용자 name, keyCD, data, response code를 추출할수 있다.
     private boolean mResponse; //request phr
     private String mData = "";
     private String key;
     private String pName;
     private PHR phr;
-    DocumentBuilderFactory factory;
-    DocumentBuilder builder;
+
 
     public XmlParser() {
         key = "";
         pName = "";
     }
 
-    public Objects xmlParsing() {
-        return null;
-    }
     public int checkResponse(String data) {
         int response = 0;
         try {

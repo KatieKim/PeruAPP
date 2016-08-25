@@ -26,7 +26,7 @@
             android:layout_marginRight="30dp"
             android:layout_marginBottom="10dp"
             android:paddingRight="10dp"
-            android:text="Change password"
+            android:text="Cambio Contraseña"
             android:textStyle="bold"
             android:textSize="25dp"></TextView>
 
@@ -38,7 +38,7 @@
                 android:id="@+id/MyInfo_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="password"
+                android:hint="contraseña"
                 android:imeActionId="@+id/login"
                 android:imeActionLabel="@string/action_sign_in_short"
                 android:imeOptions="actionNext"
@@ -60,7 +60,7 @@
                 android:id="@+id/MyInfo_NewPassword1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="new password1"
+                android:hint="nuevo contraseña1"
                 android:imeActionId="@+id/login"
                 android:imeActionLabel="@string/action_sign_in_short"
                 android:imeOptions="actionNext"
@@ -82,7 +82,7 @@
                 android:id="@+id/MyInfo_NewPassword2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="new password2"
+                android:hint="nuevo contraseña2"
                 android:imeActionId="@+id/login"
                 android:imeActionLabel="@string/action_sign_in_short"
                 android:imeOptions="actionDone"
@@ -106,7 +106,7 @@
             android:layout_marginTop="16dp"
             android:layout_gravity="center"
             android:background="@drawable/login_btn"
-            android:text="Change"
+            android:text="cambio"
             android:textSize="20dp"
             android:textStyle="bold" />
         <Button
@@ -120,8 +120,9 @@
             android:layout_marginTop="16dp"
             android:layout_gravity="center"
             android:background="@drawable/login_btn"
-            android:text="Log Out"
+            android:text="desconectar"
             android:textSize="20dp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textColor="#ffffff" />
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

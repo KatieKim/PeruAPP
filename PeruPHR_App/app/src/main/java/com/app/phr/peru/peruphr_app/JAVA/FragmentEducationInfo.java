@@ -1,6 +1,10 @@
 package com.app.phr.peru.peruphr_app.JAVA;
 
-import android.app.Activity;
+/**
+ * Created by hansol on 2016-08-10.
+ * tab layout 중에서 교육자료를 보여줄 fragment
+ */
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -26,9 +30,10 @@ public class FragmentEducationInfo extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-     //   hideKeyboard();
+        View v = inflater.inflate(R.layout.fragment_educationinfo, container, false);
 
-        return inflater.inflate(R.layout.fragment_educationinfo, container, false);
+
+        return v;
     }
 
 }
